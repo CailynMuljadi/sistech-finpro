@@ -5,7 +5,7 @@ import { Phone } from 'lucide-react';
 
 export const EmergencyShortcuts: React.FC = () => {
   const services = [
-    { label: "Emergency Services", number: "911", desc: "Police, Ambulance, Fire" },
+    { label: "Emergency Services", number: "12345", desc: "Police, Ambulance, Fire" },
     { label: "Poison Helpline", number: "1-800-222-1222", desc: "24/7 Medical Advice" },
   ];
 

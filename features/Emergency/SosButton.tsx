@@ -32,6 +32,11 @@ export const SosButton: React.FC<SosButtonProps> = ({ onTrigger }) => {
     }, 100);
   };
 
+const handleTouchStart = (e: React.TouchEvent) => {
+  // Prevents mobile browser context popups/selection when holding down
+  if (e.cancelable) e.preventDefault();
+  startHold();
+};
   const cancelHold = () => {
     if (isHolding) {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -119,7 +124,7 @@ export const SosButton: React.FC<SosButtonProps> = ({ onTrigger }) => {
         onMouseLeave={cancelHold}
         onTouchStart={startHold}
         onTouchEnd={cancelHold}
-        className={`absolute w-40 h-40 rounded-full flex flex-col items-center justify-center text-white shadow-lg transition select-none ${
+        className={`absolute w-40 h-40 rounded-full flex flex-col items-center justify-center text-white shadow-lg transition select-none touch-none ${
           isHolding ? 'bg-red-700 scale-95' : 'bg-red-600 hover:bg-red-500'
         }`}
       >

@@ -5,8 +5,8 @@ import { ExternalLink } from 'lucide-react';
 
 export const SafePointsList: React.FC = () => {
   const points = [
-    { id: 1, name: "Central Police Station", type: "Police", distance: "0.4 mi", address: "450 Main St" },
-    { id: 2, name: "St. Jude Hospital ER", type: "Medical", distance: "0.8 mi", address: "120 Park Ave" },
+    { id: 1, name: "Central Police Station", type: "Police", distance: "500 m", address: "450 Main St" },
+    { id: 2, name: "St. Jude Hospital ER", type: "Medical", distance: "800 m", address: "120 Park Ave" },
   ];
 
   return (
