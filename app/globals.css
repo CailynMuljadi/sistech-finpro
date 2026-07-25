@@ -24,3 +24,20 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Force dark text and visible placeholders inside input fields */
+input, select, textarea {
+  color: #0f172a !important;
+  background-color: #ffffff !important;
+}
+
+/* Make placeholder text clearly visible */
+::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important; /* Firefox override */
+}
+
+/* Specific fix for HTML5 date-time picker text */
+input[type="datetime-local"] {
+  color: #0f172a !important;
+}
