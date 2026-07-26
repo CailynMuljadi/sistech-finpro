@@ -3,7 +3,8 @@ import React from 'react';
 interface IncidentDetailsProps {
   timestamp: string;
   description: string;
-  onChange: (fields: { timestamp?: string; description?: string }) => void;
+  evidenceFile?: File | null;
+  onChange: (fields: { timestamp?: string; description?: string; evidenceFile?: File | null; }) => void;
 }
 
 export const IncidentDetails: React.FC<IncidentDetailsProps> = ({
@@ -37,5 +38,20 @@ export const IncidentDetails: React.FC<IncidentDetailsProps> = ({
         style={{ width: '100%', padding: '0.45rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.8rem', boxSizing: 'border-box' }}
       />
     </div>
+
+<div style={{ marginBottom: '0.85rem' }}>
+  <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 'bold', color: '#334155', marginBottom: '0.2rem' }}>
+    Upload Evidence (Optional Photo/Video)
+  </label>
+  <input
+    type="file"
+    accept="image/*,video/*"
+    onChange={(e) => {
+      const file = e.target.files?.[0] || null;
+      onChange({ evidenceFile: file });
+    }}
+    style={{ fontSize: '0.8rem', color: '#0f172a' }}
+  />
+</div>
   </>
 );

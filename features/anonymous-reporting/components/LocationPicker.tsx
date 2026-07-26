@@ -37,6 +37,14 @@ export const LocationPicker: React.FC<LocationPickerProps> = ({
       {loadingLoc ? 'Detecting GPS...' : 'Auto-Detect Current Location'}
     </button>
 
+<button
+  type="button"
+  onClick={() => alert('Map Pin Picker Modal opened (Select location on map)')}
+  style={{ width: '100%', padding: '0.45rem', backgroundColor: '#f1f5f9', border: '1px solid #cbd5e1', borderRadius: '6px', fontSize: '0.8rem', cursor: 'pointer', marginTop: '0.3rem' }}
+>
+  🗺️ Select Location via Pin on Map
+</button>
+
     <div style={{ display: 'flex', gap: '0.4rem', marginBottom: '0.4rem' }}>
       <input
         type="number"
