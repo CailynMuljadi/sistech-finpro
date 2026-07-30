@@ -58,14 +58,14 @@ export default function DashboardPage() {
           </div>
 
           {!userCoords && (
-  <button
-    onClick={() => setShowLocationModal(true)}
-    className="px-3.5 py-2 rounded-xl bg-[#ce0088] text-white text-xs font-bold flex items-center gap-1.5 shadow-md hover:bg-[#ce0088]/90 transition-all animate-pulse cursor-pointer"
-  >
-    <MapPin className="w-4 h-4 text-white" />
-    <span>Aktifkan GPS</span>
-  </button>
-)}
+            <button
+            onClick={() => setShowLocationModal(true)}
+            className="px-3.5 py-2 rounded-xl bg-[#ce0088] text-white text-xs font-bold flex items-center gap-1.5 shadow-md hover:bg-[#ce0088]/90 transition-all animate-pulse cursor-pointer"
+            >
+            <MapPin className="w-4 h-4 text-white" />
+            <span>Aktifkan GPS</span>
+            </button>
+        )}
         </header>
 
         {/* Risk Status Card */}
