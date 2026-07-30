@@ -28,7 +28,8 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="id" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-        <body className="min-h-full flex flex-col bg-[#ffeff7]">
+        <body className="min-h-full flex flex-col bg-[#ffeff7]
+        suppressHydrationWarning">
           {/* Top Sticky Navbar */}
           <Navbar />
 
@@ -36,9 +37,6 @@ export default function RootLayout({
           <main className="flex-grow">
             {children}
           </main>
-
-          {/* Bottom Footer */}
-          <Footer />
         </body>
       </html>
     </ClerkProvider>
