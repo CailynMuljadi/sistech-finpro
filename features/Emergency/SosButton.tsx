@@ -12,7 +12,7 @@ export const SosButton: React.FC<SosButtonProps> = ({
   onTrigger,
   correctPin = '1234',
 }) => {
-  const [holdTime, setHoldTime] = useState(0); // in seconds
+  const [holdTime, setHoldTime] = useState(0);
   const [isHolding, setIsHolding] = useState(false);
   const [countdown, setCountdown] = useState<number | null>(null);
   const [isActive, setIsActive] = useState(false);
@@ -29,7 +29,6 @@ export const SosButton: React.FC<SosButtonProps> = ({
   const buttonRef = useRef<HTMLButtonElement | null>(null);
   const pinModalContextRef = useRef<'countdown' | 'active'>('active');
 
-  // --- Hold SOS Logic ---
   const startHold = () => {
     setIsHolding(true);
     setHoldTime(0);
@@ -56,9 +55,9 @@ export const SosButton: React.FC<SosButtonProps> = ({
     setHoldTime(0);
   };
 
-  // --- Countdown Logic ---
+  // --- 3-Second Countdown ---
   const startCountdown = () => {
-    setCountdown(30);
+    setCountdown(3);
     runCountdownInterval();
   };
 
@@ -125,7 +124,6 @@ export const SosButton: React.FC<SosButtonProps> = ({
     }
   };
 
-  // --- Mobile Touch Handler ---
   useEffect(() => {
     const btn = buttonRef.current;
     if (!btn) return;
@@ -149,8 +147,7 @@ export const SosButton: React.FC<SosButtonProps> = ({
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center font-mono my-2 relative">
-      {/* Dynamic Sonar CSS Keyframes */}
+    <div className="flex flex-col items-center justify-center font-sans my-2 relative">
       <style jsx>{`
         @keyframes sonar-ring {
           0% {
@@ -173,9 +170,9 @@ export const SosButton: React.FC<SosButtonProps> = ({
         }
       `}</style>
 
-      {/* 1. COUNTDOWN VIEW */}
+      {/* COUNTDOWN VIEW (3 SECONDS) */}
       {countdown !== null && !isActive && (
-        <div className="flex flex-col items-center justify-center p-6 text-center">
+        <div className="flex flex-col items-center justify-center p-4 text-center">
           <p className="text-[#ce0088] font-bold text-xs uppercase tracking-widest mb-1">
             Mengaktifkan SOS Dalam
           </p>
@@ -184,14 +181,14 @@ export const SosButton: React.FC<SosButtonProps> = ({
           </div>
           <button
             onClick={() => openPinModal('countdown')}
-            className="mt-3 px-6 py-2.5 bg-[#17274d] text-[#ffeff7] font-bold text-xs rounded-full flex items-center gap-2 hover:bg-[#17274d]/90 transition"
+            className="mt-3 px-6 py-2.5 bg-[#17274d] text-white font-bold text-xs rounded-full flex items-center gap-2 hover:bg-[#17274d]/90 transition"
           >
             <X className="w-4 h-4" /> BATALKAN SOS
           </button>
         </div>
       )}
 
-      {/* 2. ACTIVE EMERGENCY STATE */}
+      {/* ACTIVE EMERGENCY STATE */}
       {isActive && (
         <div className="w-full bg-[#ce0088] text-white p-6 rounded-2xl text-center space-y-4 shadow-xl">
           <ShieldAlert className="w-12 h-12 mx-auto animate-bounce" />
@@ -210,11 +207,10 @@ export const SosButton: React.FC<SosButtonProps> = ({
         </div>
       )}
 
-      {/* 3. DEFAULT SOS BUTTON WITH REPEATED SONAR RIPPLE ANIMATION */}
+      {/* DEFAULT BUTTON WITH SONAR RIPPLE ANIMATION */}
       {countdown === null && !isActive && (
         <div className="flex flex-col items-center justify-center">
           <div className="relative w-48 h-48 flex items-center justify-center">
-            {/* Sonar Pulsing Circles (Ripples emanating outward when held down) */}
             {isHolding && (
               <>
                 <div className="absolute inset-0 rounded-full border-2 border-[#ce0088] animate-sonar-1 pointer-events-none" />
@@ -223,19 +219,17 @@ export const SosButton: React.FC<SosButtonProps> = ({
               </>
             )}
 
-            {/* Main Outer Decorative Border Circle */}
             <div className="absolute inset-1 rounded-full border-2 border-[#17274d]/20" />
 
-            {/* Interactive SOS Trigger Button */}
             <button
               ref={buttonRef}
               onMouseDown={startHold}
               onMouseUp={cancelHold}
               onMouseLeave={cancelHold}
-              className={`relative z-10 w-36 h-36 rounded-full flex flex-col items-center justify-center border-4 transition-transform duration-100 select-none shadow-lg ${
+              className={`relative z-10 w-36 h-36 rounded-full flex flex-col items-center justify-center border-4 transition-transform duration-100 select-none shadow-md ${
                 isHolding
                   ? 'bg-[#ce0088] border-[#17274d] text-white scale-95'
-                  : 'bg-[#ffeff7] border-[#17274d] text-[#17274d] hover:bg-[#ce0088]/10'
+                  : 'bg-white border-[#17274d] text-[#17274d] hover:bg-[#ffeff7]/80'
               }`}
             >
               <span className="text-2xl font-black tracking-wider pointer-events-none">
@@ -247,22 +241,21 @@ export const SosButton: React.FC<SosButtonProps> = ({
             </button>
           </div>
 
-          {/* Feedback Indicators matching wireframe image_67cd5e.png */}
           <div className="mt-4 flex flex-col items-center gap-2">
-            <div className="px-4 py-1.5 border border-[#17274d]/30 rounded-lg text-xs font-bold text-[#17274d] bg-white/60">
+            <div className="px-4 py-1.5 border border-[#17274d]/30 rounded-lg text-xs font-bold text-[#17274d] bg-white">
               {isHolding ? 'MENAHAN... JANGAN LEPAS' : 'TEKAN & TAHAN UNTUK SOS'}
             </div>
-            <div className="px-3 py-1 border border-dashed border-[#17274d]/40 rounded-md text-xs font-mono text-[#17274d]">
+            <div className="px-3 py-1 border border-dashed border-[#17274d]/40 rounded-md text-xs font-mono text-[#17274d] bg-white/50">
               {holdTime.toFixed(1)} detik / 2 detik
             </div>
           </div>
         </div>
       )}
 
-      {/* --- PIN SECURITY MODAL --- */}
+      {/* PIN SECURITY MODAL */}
       {showPinModal && (
         <div className="fixed inset-0 bg-[#17274d]/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-[#ffeff7] border border-[#17274d]/20 p-6 rounded-2xl max-w-xs w-full text-center space-y-4 shadow-2xl text-[#17274d]">
+          <div className="bg-white border border-[#17274d]/20 p-6 rounded-2xl max-w-xs w-full text-center space-y-4 shadow-2xl text-[#17274d]">
             <div className="w-10 h-10 bg-[#ce0088]/10 border border-[#ce0088]/30 rounded-full flex items-center justify-center mx-auto text-[#ce0088]">
               <Lock className="w-5 h-5" />
             </div>
@@ -281,7 +274,7 @@ export const SosButton: React.FC<SosButtonProps> = ({
               value={enteredPin}
               onChange={(e) => handlePinSubmit(e.target.value)}
               placeholder="••••"
-              className="w-32 mx-auto text-center py-2 text-xl font-bold bg-white text-[#17274d] rounded-lg tracking-widest border border-[#17274d]/30 focus:outline-none"
+              className="w-32 mx-auto text-center py-2 text-xl font-bold bg-[#ffeff7]/40 text-[#17274d] rounded-lg tracking-widest border border-[#17274d]/30 focus:outline-none"
             />
 
             {pinError && (

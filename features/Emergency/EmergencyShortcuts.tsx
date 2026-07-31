@@ -5,24 +5,26 @@ import { Phone } from 'lucide-react';
 
 export const EmergencyShortcuts: React.FC = () => {
   const services = [
-    { label: "Emergency Services", number: "12345", desc: "Police, Ambulance, Fire" },
-    { label: "Poison Helpline", number: "1-800-222-1222", desc: "24/7 Medical Advice" },
+    { label: "Layanan Darurat Utama", number: "112", desc: "Polisi, Ambulans, Pemadam" },
+    { label: "Bantuan Medis / Panggilan Ambulans", number: "119", desc: "Layanan Darurat Kesehatan 24/7" },
   ];
 
   return (
-    <div className="w-full space-y-2">
-      <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Direct Emergency Dial</span>
+    <div className="w-full space-y-2 font-mono">
+      <span className="text-[10px] font-bold text-[#17274d]/60 uppercase tracking-wider block">
+        Panggilan Darurat Langsung
+      </span>
       {services.map((item, idx) => (
         <a
           key={idx}
           href={`tel:${item.number}`}
-          className="flex justify-between items-center p-3 bg-slate-800/60 hover:bg-slate-800 border border-slate-700/50 rounded-xl transition"
+          className="flex justify-between items-center p-3 bg-white/80 hover:bg-white border border-[#17274d]/15 rounded-xl transition shadow-sm"
         >
           <div>
-            <div className="text-sm font-semibold text-slate-200">{item.label}</div>
-            <div className="text-xs text-slate-400">{item.desc}</div>
+            <div className="text-xs font-bold text-[#17274d]">{item.label}</div>
+            <div className="text-[10px] text-[#17274d]/70">{item.desc}</div>
           </div>
-          <div className="flex items-center gap-1 text-emerald-400 text-xs font-bold bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+          <div className="flex items-center gap-1.5 text-[#ce0088] text-xs font-bold bg-[#ce0088]/10 px-2.5 py-1 rounded-lg border border-[#ce0088]/20">
             <Phone className="w-3 h-3" />
             {item.number}
           </div>

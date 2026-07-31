@@ -25,8 +25,8 @@ export const LocationStatusCard: React.FC = () => {
         });
         setLoading(false);
       },
-      (err) => {
-        setErrorMsg('Gagal mengambil lokasi GPS. Pastikan izin lokasi aktif.');
+      () => {
+        setErrorMsg('Gagal mengambil lokasi GPS.');
         setLoading(false);
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -38,7 +38,7 @@ export const LocationStatusCard: React.FC = () => {
   }, []);
 
   return (
-    <div className="bg-[#ffeff7] border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between font-mono text-[#17274d]">
+    <div className="bg-white border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between font-sans text-[#17274d] shadow-sm">
       <div>
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-bold text-sm tracking-wide uppercase text-[#17274d]">
@@ -70,7 +70,7 @@ export const LocationStatusCard: React.FC = () => {
         </ul>
 
         {coords && (
-          <div className="bg-white/80 p-2 rounded-xl text-[11px] font-mono border border-[#17274d]/10 mb-3 text-center">
+          <div className="bg-[#ffeff7]/60 p-2 rounded-xl text-[11px] font-mono border border-[#17274d]/10 mb-3 text-center">
             {coords.lat.toFixed(4)}° N, {coords.lng.toFixed(4)}° E
           </div>
         )}
@@ -85,7 +85,7 @@ export const LocationStatusCard: React.FC = () => {
       <button
         onClick={fetchLocation}
         disabled={loading}
-        className="w-full py-2.5 bg-white hover:bg-slate-50 border border-[#17274d]/20 text-[#17274d] font-bold text-xs rounded-xl tracking-wider uppercase transition flex items-center justify-center gap-2 active:scale-98 disabled:opacity-50"
+        className="w-full py-2.5 bg-white hover:bg-[#ffeff7]/60 border border-[#17274d]/20 text-[#17274d] font-bold text-xs rounded-xl tracking-wider uppercase transition flex items-center justify-center gap-2 shadow-sm active:scale-98 disabled:opacity-50"
       >
         <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin' : ''}`} />
         PERBARUI LOKASI

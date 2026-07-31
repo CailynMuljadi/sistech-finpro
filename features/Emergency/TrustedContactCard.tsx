@@ -7,7 +7,7 @@ export const TrustedContactsCard: React.FC = () => {
   const [contacts] = useState(['Ayah', 'Ibu', 'Kakak']);
 
   return (
-    <div className="bg-[#ffeff7] border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between font-mono text-[#17274d]">
+    <div className="bg-white border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between font-sans text-[#17274d] shadow-sm">
       <div>
         <div className="flex items-center justify-between mb-3">
           <h3 className="font-bold text-sm tracking-wide uppercase text-[#17274d]">
@@ -34,7 +34,7 @@ export const TrustedContactsCard: React.FC = () => {
         </p>
       </div>
 
-      <button className="w-full py-2.5 bg-white hover:bg-slate-50 border border-[#17274d]/20 text-[#17274d] font-bold text-xs rounded-xl tracking-wider uppercase transition flex items-center justify-center gap-1.5 active:scale-98">
+      <button className="w-full py-2.5 bg-white hover:bg-[#ffeff7]/60 border border-[#17274d]/20 text-[#17274d] font-bold text-xs rounded-xl tracking-wider uppercase transition flex items-center justify-center gap-1.5 shadow-sm active:scale-98">
         <UserPlus className="w-3.5 h-3.5 text-[#ce0088]" />
         KELOLA KONTAK
       </button>
