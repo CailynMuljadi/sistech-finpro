@@ -16,20 +16,21 @@ export const PanicExitButton: React.FC<PanicExitButtonProps> = ({ onExit }) => {
       type="button"
       onClick={handlePanic}
       style={{
-        backgroundColor: '#fee2e2',
-        color: '#991b1b',
+        backgroundColor: '#ce0088',
+        color: '#ffffff',
         border: 'none',
-        padding: '0.4rem 0.65rem',
+        padding: '0.5rem 0.9rem',
         borderRadius: '6px',
         cursor: 'pointer',
-        fontSize: '0.75rem',
-        fontWeight: 'bold',
+        fontSize: '0.8rem',
+        fontWeight: '600',
         display: 'flex',
         alignItems: 'center',
-        gap: '0.2rem'
+        gap: '0.3rem',
+        transition: 'opacity 0.2s ease'
       }}
     >
-      <X size={14} /> Quick Exit
+      <X size={16} /> Quick Exit
     </button>
   );
 };

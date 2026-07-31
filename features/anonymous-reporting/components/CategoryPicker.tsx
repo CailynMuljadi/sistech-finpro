@@ -2,12 +2,12 @@ import React from 'react';
 import { IncidentCategory, CategoryOption } from '../types';
 
 const CATEGORIES: CategoryOption[] = [
-  { id: 'catcalling', label: 'Catcalling / Verbal Comments' },
-  { id: 'following', label: 'Being Followed / Stalked' },
-  { id: 'verbal_harassment', label: 'Harassment or Threats' },
-  { id: 'physical_contact', label: 'Unwanted Physical Contact' },
-  { id: 'poor_lighting', label: 'Poor Lighting / Unsafe Area' },
-  { id: 'other', label: 'Other Incident' }
+  { id: 'catcalling', label: 'Catcalling' },
+  { id: 'following', label: 'Diikuti' },
+  { id: 'physical_contact', label: 'Kontak Fisik' },
+  { id: 'verbal_harassment', label: 'Pelecehan / Ancaman' },
+  { id: 'poor_lighting', label: 'Area Minim Penerangan' },
+  { id: 'other', label: 'Lainnya' }
 ];
 
 interface CategoryPickerProps {
@@ -16,20 +16,44 @@ interface CategoryPickerProps {
 }
 
 export const CategoryPicker: React.FC<CategoryPickerProps> = ({ value, onChange }) => (
-  <div style={{ marginBottom: '0.85rem' }}>
-    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 'bold', color: '#334155', marginBottom: '0.2rem' }}>
-      Incident Category <span style={{ color: '#ef4444' }}>*</span>
-    </label>
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value as IncidentCategory)}
-      required
-      style={{ width: '100%', padding: '0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '0.85rem', color: '#0f172a', backgroundColor:'#ffffff' }}
+  <div style={{ marginBottom: '2rem' }}>
+    <label
+      style={{
+        display: 'block',
+        fontSize: '0.8rem',
+        fontWeight: '700',
+        color: '#17274d',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        marginBottom: '0.75rem'
+      }}
     >
-      <option value="">-- Select category --</option>
-      {CATEGORIES.map((cat) => (
-        <option key={cat.id} value={cat.id}>{cat.label}</option>
-      ))}
-    </select>
+      Incident Category
+    </label>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+      {CATEGORIES.map((cat) => {
+        const isSelected = value === cat.id;
+        return (
+          <button
+            key={cat.id}
+            type="button"
+            onClick={() => onChange(cat.id as IncidentCategory)}
+            style={{
+              padding: '0.65rem 1.4rem',
+              borderRadius: '6px',
+              border: isSelected ? '2px solid #ce0088' : '1px solid #cbd5e1',
+              backgroundColor: isSelected ? '#ffeff7' : '#ffffff',
+              color: isSelected ? '#ce0088' : '#17274d',
+              fontWeight: isSelected ? '600' : '400',
+              fontSize: '0.9rem',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            {cat.label}
+          </button>
+        );
+      })}
+    </div>
   </div>
 );
