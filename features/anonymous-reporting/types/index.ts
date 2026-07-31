@@ -19,6 +19,7 @@ export interface AnonymousReportFormData {
   isFuzzy: boolean;
   timestamp: string;
   description: string;
+  evidenceFile?: File | null; // Made optional with ?
 }
 
 export interface ReportPayload {
@@ -35,8 +36,4 @@ export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   error?: string;
-}
-
-export interface AnonymousReportFormData {
-  evidenceFile: File | null;
 }

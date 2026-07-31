@@ -11,7 +11,8 @@ const INITIAL_STATE: AnonymousReportFormData = {
   locationName: '',
   isFuzzy: true,
   timestamp: new Date().toISOString().slice(0, 16),
-  description: ''
+  description: '',
+  evidenceFile: null, // <-- Optional property initialized to null
 };
 
 export function useAnonymousReport() {
