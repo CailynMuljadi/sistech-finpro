@@ -10,6 +10,12 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-navy: #17274d; /* Navy / Main Navbar */
+  --color-pink-soft: #ffeff7; /* Light Pink Background */
+  --color-magenta: #ce0088;   /* Bright Accent */
+  --color-peach: #ffdbb6;     /* Light Peach */
+  --color-danger: #d9534f;    /* Red / SOS Alert */
+  --color-dark-gray: #3a3a3a; /* Text Gray */
 }
 
 @media (prefers-color-scheme: dark) {
@@ -20,8 +26,8 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
+  background-color: #ffeff7 !important;
+  color: #17274d;
   font-family: Arial, Helvetica, sans-serif;
 }
 
