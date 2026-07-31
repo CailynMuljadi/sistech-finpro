@@ -1,26 +1,83 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Eye, EyeOff, Lock, Check } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Check, Clock } from 'lucide-react';
+
+// Feature Component Imports
 import { LocationStatusCard } from '@/features/Emergency/LocationStatusCard';
 import { TrustedContactsCard } from '@/features/Emergency/TrustedContactCard';
+import { PinDaruratCard } from '@/features/Emergency/PinDaruratCard';
 import { SosButton } from '@/features/Emergency/SosButton';
 import { SosActiveView } from '@/features/Emergency/SosActiveView';
 
+export interface SosHistoryItem {
+  id: string;
+  timestamp: string;
+  status: 'Aktif' | 'Dibatalkan' | 'Selesai';
+}
+
 export default function EmergencyPage() {
   const [isSosActive, setIsSosActive] = useState(false);
-  const [showPin, setShowPin] = useState(false);
-  const [pin] = useState('1234');
+  const [pin, setPin] = useState('1234');
+  const [history, setHistory] = useState<SosHistoryItem[]>([]);
+
+  // Sync PIN & History from LocalStorage on mount
+  useEffect(() => {
+    const savedPin = localStorage.getItem('sos_security_pin');
+    if (savedPin) setPin(savedPin);
+
+    const savedHistory = localStorage.getItem('sos_history');
+    if (savedHistory) {
+      try {
+        setHistory(JSON.parse(savedHistory));
+      } catch (e) {
+        console.error('Gagal membaca riwayat SOS:', e);
+      }
+    }
+  }, []);
+
+  const saveHistory = (newHistory: SosHistoryItem[]) => {
+    setHistory(newHistory);
+    localStorage.setItem('sos_history', JSON.stringify(newHistory));
+  };
+
+  // Triggered when SOS button is held & countdown finishes
+  const handleSosTrigger = () => {
+    setIsSosActive(true);
+
+    const newLog: SosHistoryItem = {
+      id: Date.now().toString(),
+      timestamp: new Date().toLocaleString('id-ID', {
+        dateStyle: 'medium',
+        timeStyle: 'short',
+      }),
+      status: 'Aktif',
+    };
+
+    saveHistory([newLog, ...history]);
+  };
+
+  // Triggered when PIN stand-down is submitted in SosActiveView
+  const handleStandDown = () => {
+    setIsSosActive(false);
+
+    if (history.length > 0) {
+      const updatedHistory = history.map((item, index) =>
+        index === 0 ? { ...item, status: 'Selesai' as const } : item
+      );
+      saveHistory(updatedHistory);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#ffeff7] text-[#17274d] font-sans p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Render Active View when triggered */}
         {isSosActive ? (
-          <SosActiveView onStandDown={() => setIsSosActive(false)} />
+          <SosActiveView onStandDown={handleStandDown} correctPin={pin} />
         ) : (
           <>
-            {/* Status Bar */}
+            {/* Top Status Indicator Bar */}
             <div className="flex flex-col md:flex-row md:items-center justify-between text-xs bg-white border border-[#17274d]/15 p-3 rounded-xl gap-2 shadow-sm">
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
@@ -35,7 +92,7 @@ export default function EmergencyPage() {
               </div>
             </div>
 
-            {/* Title Section */}
+            {/* Page Header */}
             <div>
               <h1 className="text-2xl md:text-3xl font-black text-[#17274d]">
                 Emergency SOS
@@ -47,6 +104,7 @@ export default function EmergencyPage() {
 
             {/* Top 4 Cards Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {/* Card 1: Cara Menggunakan SOS */}
               <div className="bg-white border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between shadow-sm">
                 <div>
                   <h3 className="font-bold text-sm tracking-wide uppercase mb-3 text-[#17274d]">
@@ -60,61 +118,73 @@ export default function EmergencyPage() {
                 </div>
               </div>
 
+              {/* Card 2: Trusted Contacts */}
               <TrustedContactsCard />
+
+              {/* Card 3: Location Status (Real-time GPS) */}
               <LocationStatusCard />
 
-              <div className="bg-white border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between shadow-sm">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <Lock className="w-4 h-4 text-[#ce0088]" />
-                    <h3 className="font-bold text-sm tracking-wide uppercase text-[#17274d]">
-                      PIN Darurat
-                    </h3>
-                  </div>
-                  <p className="text-xs font-semibold mb-1 text-[#17274d]">
-                    PIN pembatalan telah dibuat
-                  </p>
-                  <p className="text-[11px] text-[#17274d]/75 mb-3">
-                    Gunakan PIN ini untuk membatalkan Emergency SOS selama countdown berlangsung.
-                  </p>
-
-                  <div className="relative mb-3">
-                    <input
-                      type={showPin ? 'text' : 'password'}
-                      readOnly
-                      value={pin}
-                      className="w-full bg-[#ffeff7]/50 border border-[#17274d]/20 px-3 py-2 rounded-xl text-center font-bold tracking-widest text-sm text-[#17274d] focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setShowPin(!showPin)}
-                      className="absolute right-3 top-2.5 text-[#17274d]/60 hover:text-[#17274d]"
-                    >
-                      {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                <button className="w-full py-2.5 bg-white hover:bg-[#ffeff7]/60 border border-[#17274d]/20 text-[#17274d] font-bold text-xs rounded-xl tracking-wider uppercase transition shadow-sm active:scale-98">
-                  UBAH PIN
-                </button>
-              </div>
+              {/* Card 4: Ubah PIN Card */}
+              <PinDaruratCard />
             </div>
 
-            {/* Lower Row: History & SOS Trigger Area */}
+            {/* Lower Row: Working History & SOS Trigger Area */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+              {/* History Section */}
               <div className="lg:col-span-2 bg-white border border-[#17274d]/15 p-6 rounded-2xl shadow-sm">
-                <h3 className="font-bold text-sm uppercase mb-4 text-[#17274d]">
-                  Riwayat Emergency SOS
-                </h3>
-                <p className="text-xs text-[#17274d]/60 italic">
-                  Belum pernah mengaktifkan Emergency SOS.
-                </p>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-bold text-sm uppercase text-[#17274d] flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-[#ce0088]" />
+                    Riwayat Emergency SOS
+                  </h3>
+                  {history.length > 0 && (
+                    <button
+                      onClick={() => saveHistory([])}
+                      className="text-[11px] text-[#ce0088] font-bold hover:underline"
+                    >
+                      Hapus Riwayat
+                    </button>
+                  )}
+                </div>
+
+                {history.length === 0 ? (
+                  <p className="text-xs text-[#17274d]/60 italic">
+                    Belum pernah mengaktifkan Emergency SOS.
+                  </p>
+                ) : (
+                  <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
+                    {history.map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-3 bg-[#ffeff7]/40 border border-[#17274d]/10 rounded-xl flex items-center justify-between text-xs"
+                      >
+                        <div className="space-y-1">
+                          <div className="font-bold text-[#17274d]">
+                            Pemicu SOS Darurat
+                          </div>
+                          <div className="text-[11px] text-[#17274d]/70 font-mono">
+                            {item.timestamp}
+                          </div>
+                        </div>
+
+                        <span
+                          className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                            item.status === 'Aktif'
+                              ? 'bg-red-500/10 text-red-600 border border-red-500/20 animate-pulse'
+                              : 'bg-emerald-500/10 text-emerald-700 border border-emerald-500/20'
+                          }`}
+                        >
+                          {item.status}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
+              {/* Main SOS Trigger Button Card */}
               <div className="bg-white border border-[#17274d]/15 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm">
-                {/* Trigger callback activates the full success view */}
-                <SosButton onTrigger={() => setIsSosActive(true)} />
+                <SosButton onTrigger={handleSosTrigger} correctPin={pin} />
                 <p className="text-[11px] text-[#17274d]/70 mt-4">
                   Tekan dan tahan selama 2 detik untuk mengaktifkan Emergency SOS.
                 </p>
