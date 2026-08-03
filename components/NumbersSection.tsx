@@ -44,13 +44,13 @@ export default function NumbersSection(): React.ReactElement {
           {/* Action Buttons */}
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Show when="signed-out">
-              <SignUpButton mode="modal">
+              <SignUpButton mode="modal" forceRedirectUrl="/dashboard">
                 <button className="px-7 py-3.5 rounded-xl bg-[#ce0088] text-white font-bold text-sm shadow-md hover:bg-[#ce0088]/90 transition-all cursor-pointer">
                   Daftar Sekarang
                 </button>
               </SignUpButton>
 
-              <SignInButton mode="modal">
+              <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                 <button className="px-7 py-3.5 rounded-xl bg-white text-[#17274d] border border-gray-200 font-bold text-sm shadow-sm hover:bg-gray-50 transition-all cursor-pointer">
                   Masuk ke Akun
                 </button>

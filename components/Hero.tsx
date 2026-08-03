@@ -42,7 +42,7 @@ export default function Hero(): React.ReactElement {
             <div className="flex flex-wrap gap-4 mt-10">
 
               <Show when="signed-out">
-                <SignUpButton mode="modal">
+                <SignUpButton mode="modal" forceRedirectUrl="/dashboard">
                   <button
                     className="
                       bg-primary

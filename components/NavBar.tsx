@@ -120,7 +120,7 @@ export default function Navbar() {
 
           <Show when="signed-out">
 
-            <SignInButton mode="modal">
+            <SignInButton mode="modal" forceRedirectUrl="/dashboard">
 
               <button
                 className="
