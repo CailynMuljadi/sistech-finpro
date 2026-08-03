@@ -34,39 +34,14 @@ export default function AnonymousReportingPage() {
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: '#ffeff7',
-        minHeight: '100vh',
-        padding: '3rem 1.5rem',
-        fontFamily: 'system-ui, -apple-system, sans-serif'
-      }}
-    >
-      <div
-        style={{
-          maxWidth: '1100px',
-          margin: '0 auto',
-          backgroundColor: '#ffffff',
-          borderRadius: '16px',
-          boxShadow: '0 10px 30px rgba(23, 39, 77, 0.08)',
-          padding: '2.5rem',
-          boxSizing: 'border-box'
-        }}
-      >
+    <div className="min-h-screen bg-[#ffeff7] px-3 sm:px-6 py-6 sm:py-12 font-sans overflow-x-hidden text-[#17274d]">
+      <div className="max-w-[1100px] mx-auto bg-white rounded-2xl shadow-lg p-4 sm:p-10 box-border overflow-x-hidden">
+        
         {/* Header Section */}
-        <div style={{ marginBottom: '1.5rem', borderBottom: '1px solid #ffeff7', paddingBottom: '1rem' }}>
-          <h1
-            style={{
-              fontSize: '1.8rem',
-              fontWeight: '700',
-              color: '#17274d',
-              margin: 0,
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.6rem'
-            }}
-          >
-            <Shield size={28} color="#ce0088" /> Anonymous Reporting
+        <div className="mb-6 border-b border-[#ffeff7] pb-4">
+          <h1 className="text-xl sm:text-3xl font-bold text-[#17274d] m-0 flex items-center gap-2.5">
+            <Shield className="w-6 h-6 sm:w-7 sm:h-7 text-[#ce0088] shrink-0" /> 
+            <span>Anonymous Reporting</span>
           </h1>
         </div>
 
@@ -75,26 +50,14 @@ export default function AnonymousReportingPage() {
 
         {/* Error Message */}
         {status === 'error' && (
-          <div
-            style={{
-              backgroundColor: '#fef2f2',
-              border: '1px solid #fecaca',
-              color: '#991b1b',
-              padding: '0.85rem 1rem',
-              borderRadius: '8px',
-              marginBottom: '1.5rem',
-              fontSize: '0.9rem',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem'
-            }}
-          >
-            <AlertCircle size={18} /> Submission failed. Please try again.
+          <div className="bg-red-50 border border-red-200 text-red-800 p-3.5 rounded-xl mb-6 text-xs sm:text-sm flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" /> 
+            <span>Submission failed. Please try again.</span>
           </div>
         )}
 
         {/* Form Container */}
-        <form onSubmit={handleFormSubmit}>
+        <form onSubmit={handleFormSubmit} className="space-y-6">
           <CategoryPicker
             value={formData.category}
             onChange={(category) => updateFormField({ category })}
@@ -121,21 +84,11 @@ export default function AnonymousReportingPage() {
           <button
             type="submit"
             disabled={submitting}
-            style={{
-              width: '100%',
-              padding: '1.1rem',
-              backgroundColor: '#17274d',
-              color: '#ffffff',
-              border: 'none',
-              borderRadius: '8px',
-              fontWeight: '700',
-              fontSize: '1rem',
-              letterSpacing: '0.05em',
-              textTransform: 'uppercase',
-              cursor: submitting ? 'not-allowed' : 'pointer',
-              opacity: submitting ? 0.7 : 1,
-              marginTop: '1.5rem'
-            }}
+            className={`
+              w-full py-4 px-6 bg-[#17274d] text-white border-none rounded-xl 
+              font-bold text-sm tracking-wider uppercase transition mt-6
+              ${submitting ? 'cursor-not-allowed opacity-70' : 'cursor-pointer hover:bg-[#17274d]/90'}
+            `}
           >
             {submitting ? 'Sending Report...' : 'Kirim'}
           </button>
