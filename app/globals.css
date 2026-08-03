@@ -1,49 +1,66 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #fff2ef;
+  --foreground: #3a3a3a;
 }
 
 @theme inline {
+  /* Default */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
+  /* Font */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --color-navy: #17274d; /* Navy / Main Navbar */
-  --color-pink-soft: #ffeff7; /* Light Pink Background */
-  --color-magenta: #ce0088;   /* Bright Accent */
-  --color-peach: #ffdbb6;     /* Light Peach */
-  --color-danger: #d9534f;    /* Red / SOS Alert */
-  --color-dark-gray: #3a3a3a; /* Text Gray */
+
+  /* ===== SafeStep Design System ===== */
+
+  /* Primary */
+  --color-primary: #1f2a4f;
+
+  /* Background */
+  --color-background-main: #fff2ef;
+
+  /* Secondary */
+  --color-secondary: #f7a5a5;
+
+  /* Secondary Light */
+  --color-secondary-light: #ffd8b6;
+
+  /* Danger */
+  --color-danger: #d9534f;
+
+  /* Default Text */
+  --color-default: #3a3a3a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #fff2ef;
+    --foreground: #3a3a3a;
   }
 }
 
 body {
-  background-color: #ffeff7 !important;
-  color: #17274d;
+  background: var(--color-background-main);
+  color: var(--color-default);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Force dark text and visible placeholders inside input fields */
-input, select, textarea {
-  color: #0f172a !important;
-  background-color: #ffffff !important;
+/* Form */
+input,
+select,
+textarea {
+  background: white !important;
+  color: var(--color-default) !important;
 }
 
-/* Make placeholder text clearly visible */
 ::placeholder {
-  color: #64748b !important;
-  opacity: 1 !important; /* Firefox override */
+  color: #8a8a8a !important;
+  opacity: 1;
 }
 
-/* Specific fix for HTML5 date-time picker text */
 input[type="datetime-local"] {
-  color: #0f172a !important;
+  color: var(--color-default) !important;
 }

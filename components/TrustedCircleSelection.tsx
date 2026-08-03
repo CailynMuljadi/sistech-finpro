@@ -1,74 +1,114 @@
-import React from 'react';
+'use client';
+
+import Image from 'next/image';
 import Link from 'next/link';
-import { Check, Image as ImageIcon } from 'lucide-react';
+import {
+  UserPlus,
+  Clock3,
+  ShieldCheck,
+  Mail,
+  Check,
+} from 'lucide-react';
 
-export default function TrustedCircleSection(): React.ReactElement {
-  const steps = [
-    'Tambah Trusted Contact',
-    'Check-in Timer',
-    'Grace Period 5 Menit',
-    'Auto Alert Email',
-  ];
+const features = [
+  {
+    icon: UserPlus,
+    title: 'Tambah Trusted Contact',
+  },
+  {
+    icon: Clock3,
+    title: 'Check-in Timer',
+  },
+  {
+    icon: ShieldCheck,
+    title: 'Grace Period 5 Menit',
+  },
+  {
+    icon: Mail,
+    title: 'Auto Alert Email',
+  },
+];
 
+export default function TrustedCirclePreview() {
   return (
-    <section className="w-full bg-white py-20 px-6">
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-        
-        {/* Left Column: Image Placeholder */}
-        <div className="lg:col-span-6 flex justify-center w-full">
-          <div className="w-full aspect-[4/3] max-w-2xl bg-gray-100 border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center p-8 text-center text-gray-400 shadow-sm">
-            <ImageIcon className="w-12 h-12 mb-3 text-gray-300" />
-            <p className="text-sm font-medium text-gray-500">
-              [ Screenshot Halaman Trusted Circle ]
-            </p>
-          </div>
-        </div>
+    <section className="bg-white py-24">
+      <div className="max-w-7xl mx-auto px-6">
 
-        {/* Right Column: Text & Features List */}
-        <div className="lg:col-span-6 flex flex-col items-start">
-          
-          {/* Top Label with Line */}
-          <div className="flex items-center gap-2 mb-4">
-            <span className="w-8 h-[2px] bg-magenta" />
-            <span className="text-xs font-bold uppercase tracking-widest text-magenta">
+        <div className="grid lg:grid-cols-2 gap-20 items-center">
+
+          {/* Phone */}
+
+          <div className="flex justify-center">
+
+            <Image
+              src="/trusted-circle-phone.png"
+              alt="Trusted Circle"
+              width={320}
+              height={650}
+              className="drop-shadow-2xl"
+            />
+
+          </div>
+
+          {/* Content */}
+
+          <div>
+
+            <div className="inline-block bg-peach text-navy text-[11px] font-bold px-4 py-1 rounded-full uppercase tracking-widest mb-6">
               Trusted Circle
-            </span>
+            </div>
+
+            <h2 className="text-4xl font-bold text-navy mb-5">
+              Tetap Terhubung
+              <br />
+              Selama Perjalanan
+            </h2>
+
+            <p className="text-dark-gray leading-8 mb-10">
+              Atur estimasi waktu perjalanan dan beri tahu orang
+              terdekat bahwa kamu baik-baik saja. Jika perjalanan tidak
+              dikonfirmasi hingga waktu habis, sistem akan otomatis
+              mengirim sinyal Trusted Contact.
+            </p>
+
+            <div className="space-y-4">
+
+              {features.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                  <div
+                    key={item.title}
+                    className="bg-white border border-gray-200 rounded-xl px-5 py-4 flex justify-between items-center shadow-sm"
+                  >
+                    <div className="flex items-center gap-4">
+
+                      <div className="w-10 h-10 rounded-lg bg-pink-soft flex items-center justify-center">
+                        <Icon className="w-5 h-5 text-navy" />
+                      </div>
+
+                      <span className="text-dark-gray font-medium">
+                        {item.title}
+                      </span>
+
+                    </div>
+
+                    <Check className="text-green-500 w-5 h-5" />
+
+                  </div>
+                );
+              })}
+
+            </div>
+
+            <Link
+              href="/trusted-circle"
+              className="inline-block mt-8 bg-navy hover:opacity-90 text-white px-8 py-3 rounded-lg font-semibold transition"
+            >
+              Pelajari Selengkapnya →
+            </Link>
+
           </div>
-
-          {/* Title */}
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#17274d] tracking-tight mb-4">
-            Tetap Terhubung Selama Perjalanan
-          </h2>
-
-          {/* Description */}
-          <p className="text-sm sm:text-base text-[#3a3a3a] leading-relaxed mb-8">
-            Atur estimasi waktu perjalanan dan beri tahu orang terdekat bahwa kamu baik-baik saja. Jika perjalanan tidak dikonfirmasi hingga waktu habis, sistem akan otomatis mengirim email kepada Trusted Contact.
-          </p>
-
-          {/* Features List Cards */}
-          <div className="w-full space-y-3 mb-8">
-            {steps.map((step) => (
-              <div
-                key={step}
-                className="flex items-center gap-3 p-3.5 rounded-xl bg-[#ffeff7]/60 border border-pink-100/80 transition-colors"
-              >
-                <div className="w-6 h-6 rounded-lg bg-[#ffeff7] text-[#ce0088] flex items-center justify-center shrink-0">
-                  <Check className="w-4 h-4 stroke-[3]" />
-                </div>
-                <span className="text-sm font-semibold text-[#17274d]">
-                  {step}
-                </span>
-              </div>
-            ))}
-          </div>
-
-          {/* CTA Button */}
-          <Link
-            href="/trusted-circle"
-            className="px-7 py-3.5 rounded-xl bg-[#17274d] text-white font-bold text-sm shadow-md hover:bg-[#17274d]/90 transition-all cursor-pointer"
-          >
-            Pelajari Selengkapnya
-          </Link>
 
         </div>
 
