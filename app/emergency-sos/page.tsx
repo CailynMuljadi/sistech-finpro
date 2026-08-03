@@ -128,10 +128,20 @@ export default function EmergencyPage() {
               <PinDaruratCard />
             </div>
 
-            {/* Lower Row: Working History & SOS Trigger Area */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
+            {/* Lower Row: Reordered Flex/Grid for Mobile & Desktop */}
+            <div className="flex flex-col lg:grid lg:grid-cols-3 gap-6 pt-2">
+              {/* Main SOS Trigger Button Card */}
+              {/* order-first on mobile (top), lg:order-last on desktop (bottom right) */}
+              <div className="order-first lg:order-last lg:col-span-1 bg-white border border-[#17274d]/15 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm">
+                <SosButton onTrigger={handleSosTrigger} correctPin={pin} />
+                <p className="text-[11px] text-[#17274d]/70 mt-4">
+                  Tekan dan tahan selama 2 detik untuk mengaktifkan Emergency SOS.
+                </p>
+              </div>
+
               {/* History Section */}
-              <div className="lg:col-span-2 bg-white border border-[#17274d]/15 p-6 rounded-2xl shadow-sm">
+              {/* order-last on mobile (below SOS), lg:order-first on desktop (left side) */}
+              <div className="order-last lg:order-first lg:col-span-2 bg-white border border-[#17274d]/15 p-6 rounded-2xl shadow-sm">
                 <div className="flex items-center justify-between mb-4">
                   <h3 className="font-bold text-sm uppercase text-[#17274d] flex items-center gap-2">
                     <Clock className="w-4 h-4 text-[#ce0088]" />
@@ -180,14 +190,6 @@ export default function EmergencyPage() {
                     ))}
                   </div>
                 )}
-              </div>
-
-              {/* Main SOS Trigger Button Card */}
-              <div className="bg-white border border-[#17274d]/15 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm">
-                <SosButton onTrigger={handleSosTrigger} correctPin={pin} />
-                <p className="text-[11px] text-[#17274d]/70 mt-4">
-                  Tekan dan tahan selama 2 detik untuk mengaktifkan Emergency SOS.
-                </p>
               </div>
             </div>
           </>
