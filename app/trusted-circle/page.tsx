@@ -1,85 +1,133 @@
-'use client';
+import Footer from "@/components/Footer";
 
-import React from 'react';
-import Link from 'next/link';
-import { Users, UserPlus, AlertCircle } from 'lucide-react';
-import { useTrustedContacts } from '@/hooks/useTrustedContacts';
+import {
+  Users,
+  ShieldCheck,
+  BellRing,
+} from "lucide-react";
 
-export const TrustedContactsCard: React.FC = () => {
-  // Pull live contacts & status helpers from your shared hook
-  const { contacts, activeContacts, hasContacts } = useTrustedContacts();
-
+export default function TrustedCirclePage() {
   return (
-    <div className="bg-white border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between font-sans text-[#17274d] shadow-sm">
-      <div>
-        {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-sm tracking-wide uppercase text-[#17274d]">
-            Trusted Contact
-          </h3>
-          <Users className="w-4 h-4 text-[#ce0088]" />
-        </div>
+    <>
+      
 
-        {/* Count Summary */}
-        <p className="text-xs font-semibold mb-2 text-[#17274d]">
-          {contacts.length === 0
-            ? 'Belum ada kontak'
-            : `${activeContacts.length} dari ${contacts.length} kontak aktif`}
-        </p>
+      <main className="min-h-screen bg-gradient-to-br from-[#FFF8FC] via-[#FFF2F8] to-[#FFEAF4]">
 
-        {/* Contact List / Empty State */}
-        {contacts.length === 0 ? (
-          <div className="flex items-center gap-2 p-2.5 my-2 bg-[#ffeff7]/60 border border-[#ce0088]/20 rounded-xl text-xs text-[#17274d]/80">
-            <AlertCircle className="w-4 h-4 text-[#ce0088] shrink-0" />
-            <span>Tambahkan kontak untuk mengirim notifikasi darurat.</span>
+        {/* HERO */}
+        <section className="max-w-7xl mx-auto px-6 pt-16">
+
+          <div className="max-w-3xl">
+
+            <span className="inline-flex rounded-full bg-pink-100 px-4 py-1 text-sm font-medium text-[#ce0088]">
+              Trusted Circle
+            </span>
+
+            <h1 className="mt-6 text-5xl font-bold leading-tight text-primary">
+              Tetap Terhubung Dengan
+              <br />
+              Orang Yang Kamu Percaya.
+            </h1>
+
+            <p className="mt-6 text-lg text-slate-600 leading-8">
+              Trusted Circle membantu orang terdekat mengetahui bahwa kamu sedang
+              melakukan perjalanan. Jika kamu lupa melakukan check-in,
+              SafeStep akan mengirimkan notifikasi secara otomatis.
+            </p>
+
+            <button className="mt-8 rounded-xl bg-primary px-7 py-3 font-semibold text-white transition hover:opacity-90">
+              Tambah Trusted Contact
+            </button>
+
           </div>
-        ) : (
-          <ul className="text-xs space-y-2 mb-4 opacity-90 pl-1 max-h-28 overflow-y-auto pr-1">
-            {contacts.slice(0, 3).map((contact) => (
-              <li
-                key={contact.id}
-                className="flex items-center justify-between gap-2"
-              >
-                <div className="flex items-center gap-2 truncate">
-                  <span
-                    className={`w-2 h-2 rounded-full shrink-0 ${
-                      contact.status === 'AKTIF' ? 'bg-[#ce0088]' : 'bg-amber-400'
-                    }`}
-                  />
-                  <span className="font-medium text-[#17274d] truncate">
-                    {contact.name}
-                  </span>
-                </div>
-                <span className="text-[10px] text-[#17274d]/60 truncate font-mono">
-                  {contact.email}
-                </span>
-              </li>
-            ))}
-            {contacts.length > 3 && (
-              <li className="text-[10px] text-[#ce0088] font-bold pl-4">
-                +{contacts.length - 3} kontak lainnya
-              </li>
-            )}
-          </ul>
-        )}
 
-        <p className="text-[11px] text-[#17274d]/75 mb-4">
-          {hasContacts
-            ? 'Semua kontak aktif siap menerima notifikasi darurat & lokasi.'
-            : 'SOS akan membunyikan alarm tetapi tidak mengirim email/SMS.'}
-        </p>
-      </div>
+        </section>
 
-      {/* Button linking directly to /kelola-kontak */}
-      <Link
-        href="/kelola-kontak"
-        className="w-full py-2.5 bg-white hover:bg-[#ffeff7]/60 border border-[#17274d]/20 text-[#17274d] font-bold text-xs rounded-xl tracking-wider uppercase transition flex items-center justify-center gap-1.5 shadow-sm active:scale-98"
-      >
-        <UserPlus className="w-3.5 h-3.5 text-[#ce0088]" />
-        KELOLA KONTAK
-      </Link>
-    </div>
+        {/* SUMMARY */}
+
+        <section className="max-w-7xl mx-auto px-6 py-12">
+
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
+            <div className="rounded-2xl border border-pink-100 bg-white p-6 shadow-sm">
+
+              <Users className="text-[#ce0088]" />
+
+              <p className="mt-4 text-sm text-slate-500">
+                Trusted Contact
+              </p>
+
+              <h2 className="mt-2 text-3xl font-bold text-primary">
+                2
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-500">
+                Kontak aktif siap digunakan.
+              </p>
+
+            </div>
+
+            <div className="rounded-2xl border border-pink-100 bg-white p-6 shadow-sm">
+
+              <ShieldCheck className="text-[#ce0088]" />
+
+              <p className="mt-4 text-sm text-slate-500">
+                Status
+              </p>
+
+              <h2 className="mt-2 text-xl font-bold text-primary">
+                Belum Ada Perjalanan
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-500">
+                Mulai perjalanan untuk mengaktifkan Check-in Timer.
+              </p>
+
+            </div>
+
+            <div className="rounded-2xl border border-pink-100 bg-white p-6 shadow-sm">
+
+              <BellRing className="text-[#ce0088]" />
+
+              <p className="mt-4 text-sm text-slate-500">
+                Notifikasi
+              </p>
+
+              <h2 className="mt-2 text-xl font-bold text-primary">
+                Siap Digunakan
+              </h2>
+
+              <p className="mt-2 text-sm text-slate-500">
+                Alert akan dikirim ke Trusted Contact bila diperlukan.
+              </p>
+
+            </div>
+
+          </div>
+
+        </section>
+
+        {/* PLACEHOLDER */}
+
+        <section className="max-w-7xl mx-auto px-6 pb-20">
+
+          <div className="rounded-3xl border border-pink-100 bg-white p-14 shadow-sm text-center">
+
+            <h2 className="text-3xl font-bold text-primary">
+              Trusted Contact
+            </h2>
+
+            <p className="mt-4 text-slate-500 max-w-xl mx-auto">
+              Pada tahap berikutnya halaman ini akan berisi daftar Trusted
+              Contact, pengaturan perjalanan, serta Check-in Timer.
+            </p>
+
+          </div>
+
+        </section>
+
+      </main>
+
+      <Footer />
+    </>
   );
-};
-
-export default TrustedContactsCard;
+}
