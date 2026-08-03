@@ -124,8 +124,8 @@ export default function Navbar() {
 
               <button
                 className="
-                bg-secondary
-                text-primary
+                bg-[#ce0088]
+                text-[#ffeff7] [#ce0088]
                 px-7
                 py-2.5
                 rounded-xl
