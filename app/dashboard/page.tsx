@@ -154,7 +154,7 @@ export default function DashboardPage() {
                   <p className="text-[11px] text-[#17274d]/70">Dikirim: Hari ini, 13.20</p>
                   <p className="text-[10px] text-[#17274d]/40 italic mt-1">Status identitas: Tetap Anonim</p>
                 </div>
-                <Link href="/reporting" className="mt-4 bg-[#17274d] text-white text-xs font-bold py-2.5 rounded-xl text-center hover:opacity-90">
+                <Link href="/anonymous-reporting" className="mt-4 bg-[#17274d] text-white text-xs font-bold py-2.5 rounded-xl text-center hover:opacity-90">
                   Buat Laporan
                 </Link>
               </div>
