@@ -8,7 +8,7 @@ export default function DashboardHeader() {
   return (
     <div className="mb-8">
       <h1 className="text-3xl font-bold text-[#17274d]">
-        Halo, {user?.firstName || 'Ayu'} 👋
+        Halo, {user?.firstName || '[name]'} 👋
       </h1>
 
       <p className="text-gray-500 mt-2">

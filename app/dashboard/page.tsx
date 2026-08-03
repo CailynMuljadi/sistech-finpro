@@ -48,7 +48,7 @@ export default function DashboardPage() {
         <header className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-[#17274d]">
-              {getGreeting()}, {user?.firstName || 'Cailyn'}!
+              {getGreeting()}, {user?.firstName || '[name]'}!
             </h1>
             <p className="text-xs sm:text-sm text-gray-600 mt-1">
               {userCoords 
