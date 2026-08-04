@@ -1,3 +1,6 @@
+import { useTrustedContacts } from '@/hooks/useTrustedContacts';
+import { ContactList } from '@/features/Contacts/ContactList';
+
 export default function TrustedContactSection() {
     const {
         totalContactsCount,

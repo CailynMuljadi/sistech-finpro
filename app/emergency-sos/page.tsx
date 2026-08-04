@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Check, Clock } from 'lucide-react';
 
 // Feature Component Imports
@@ -16,25 +16,29 @@ export interface SosHistoryItem {
   status: 'Aktif' | 'Dibatalkan' | 'Selesai';
 }
 
+function getInitialPin(): string {
+  if (typeof window === 'undefined') return '1234';
+  return localStorage.getItem('sos_security_pin') || '1234';
+}
+
+function getInitialHistory(): SosHistoryItem[] {
+  if (typeof window === 'undefined') return [];
+  const saved = localStorage.getItem('sos_history');
+  if (saved) {
+    try {
+      return JSON.parse(saved);
+    } catch (e) {
+      console.error('Gagal membaca riwayat SOS:', e);
+      return [];
+    }
+  }
+  return [];
+}
+
 export default function EmergencyPage() {
   const [isSosActive, setIsSosActive] = useState(false);
-  const [pin, setPin] = useState('1234');
-  const [history, setHistory] = useState<SosHistoryItem[]>([]);
-
-  // Sync PIN & History from LocalStorage on mount
-  useEffect(() => {
-    const savedPin = localStorage.getItem('sos_security_pin');
-    if (savedPin) setPin(savedPin);
-
-    const savedHistory = localStorage.getItem('sos_history');
-    if (savedHistory) {
-      try {
-        setHistory(JSON.parse(savedHistory));
-      } catch (e) {
-        console.error('Gagal membaca riwayat SOS:', e);
-      }
-    }
-  }, []);
+  const [pin, setPin] = useState<string>(getInitialPin);
+  const [history, setHistory] = useState<SosHistoryItem[]>(getInitialHistory);
 
   const saveHistory = (newHistory: SosHistoryItem[]) => {
     setHistory(newHistory);
