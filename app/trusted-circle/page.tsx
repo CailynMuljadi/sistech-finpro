@@ -1,104 +1,177 @@
-import Footer from "@/components/Footer";
+'use client';
+
+import React, { useState } from 'react';
+import Footer from '@/components/Footer';
+
+import { useTrustedContacts, Contact } from '@/hooks/useTrustedContacts';
 
 import {
-  Users,
-  ShieldCheck,
-  BellRing,
-} from "lucide-react";
+  ContactList,
+  ContactForm,
+  ContactGuideCard,
+} from '@/features/Contacts';
+
+import TrustedSummary from '@/features/TrustedCircle/TrustedSummary';
+import TravelSetting from '@/features/TrustedCircle/TravelSetting';
+import TravelTips from '@/features/TrustedCircle/TravelTips';
 
 export default function TrustedCirclePage() {
+  const {
+    contacts,
+    activeContacts,
+    addContact,
+    updateContact,
+    removeContact,
+  } = useTrustedContacts();
+
+  // ===========================
+  // Contact States
+  // ===========================
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [editingContactId, setEditingContactId] = useState<string | null>(null);
+
+  // ===========================
+  // Validation
+  // ===========================
+
+  const validateEmail = (inputEmail: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(inputEmail);
+  };
+
+  // ===========================
+  // Edit Contact
+  // ===========================
+
+  const handleStartEdit = (contact: Contact) => {
+    setEditingContactId(contact.id);
+    setName(contact.name);
+    setEmail(contact.email);
+    setEmailError('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingContactId(null);
+    setName('');
+    setEmail('');
+    setEmailError('');
+  };
+
+  // ===========================
+  // Submit Form
+  // ===========================
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!name.trim()) {
+      setEmailError('Nama / label kontak wajib diisi.');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setEmailError('Format email tidak valid.');
+      return;
+    }
+
+    if (editingContactId) {
+      updateContact(editingContactId, name, email);
+      setEditingContactId(null);
+    } else {
+      addContact(name, email);
+    }
+
+    setName('');
+    setEmail('');
+    setEmailError('');
+  };
+
+  // ===========================
+  // Search
+  // ===========================
+
+  const filteredContacts = contacts.filter(
+    (contact) =>
+      contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contact.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // ===========================
+  // Page
+  // ===========================
+
   return (
     <>
-      
-
       <main className="min-h-screen bg-gradient-to-br from-[#FFF8FC] via-[#FFF2F8] to-[#FFEAF4]">
 
-        {/* HERO */}
-        <section className="max-w-7xl mx-auto px-6 pt-16">
+        {/* Header */}
 
-          <div className="max-w-3xl">
+        <section className="max-w-7xl mx-auto px-6 pt-14">
 
-            <span className="inline-flex rounded-full bg-pink-100 px-4 py-1 text-sm font-medium text-[#ce0088]">
-              Trusted Circle
-            </span>
+          <h1 className="text-4xl font-bold text-primary">
+            Trusted Circle
+          </h1>
 
-            <h1 className="mt-6 text-5xl font-bold leading-tight text-primary">
-              Tetap Terhubung Dengan
-              <br />
-              Orang Yang Kamu Percaya.
-            </h1>
-
-            <p className="mt-6 text-lg text-slate-600 leading-8">
-              Trusted Circle membantu orang terdekat mengetahui bahwa kamu sedang
-              melakukan perjalanan. Jika kamu lupa melakukan check-in,
-              SafeStep akan mengirimkan notifikasi secara otomatis.
-            </p>
-
-            <button className="mt-8 rounded-xl bg-primary px-7 py-3 font-semibold text-white transition hover:opacity-90">
-              Tambah Trusted Contact
-            </button>
-
-          </div>
+          <p className="mt-4 max-w-3xl text-slate-600 leading-7">
+            Pantau perjalananmu dengan lebih tenang.
+            Tambahkan Trusted Contact dan gunakan
+            Check-in Timer agar orang terdekat mengetahui
+            bahwa kamu telah sampai dengan aman.
+          </p>
 
         </section>
 
-        {/* SUMMARY */}
+        {/* Summary */}
 
-        <section className="max-w-7xl mx-auto px-6 py-12">
+        <section className="max-w-7xl mx-auto px-6 py-10">
 
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <TrustedSummary />
 
-            <div className="rounded-2xl border border-pink-100 bg-white p-6 shadow-sm">
+        </section>
 
-              <Users className="text-[#ce0088]" />
+        {/* Trusted Contact */}
 
-              <p className="mt-4 text-sm text-slate-500">
-                Trusted Contact
-              </p>
+        <section className="max-w-7xl mx-auto px-6">
 
-              <h2 className="mt-2 text-3xl font-bold text-primary">
-                2
-              </h2>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-              <p className="mt-2 text-sm text-slate-500">
-                Kontak aktif siap digunakan.
-              </p>
+            {/* Contact List */}
 
-            </div>
+            <div className="lg:col-span-2">
 
-            <div className="rounded-2xl border border-pink-100 bg-white p-6 shadow-sm">
-
-              <ShieldCheck className="text-[#ce0088]" />
-
-              <p className="mt-4 text-sm text-slate-500">
-                Status
-              </p>
-
-              <h2 className="mt-2 text-xl font-bold text-primary">
-                Belum Ada Perjalanan
-              </h2>
-
-              <p className="mt-2 text-sm text-slate-500">
-                Mulai perjalanan untuk mengaktifkan Check-in Timer.
-              </p>
+              <ContactList
+                totalContactsCount={contacts.length}
+                filteredContacts={filteredContacts}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                editingContactId={editingContactId}
+                onEdit={handleStartEdit}
+                onRemove={removeContact}
+              />
 
             </div>
 
-            <div className="rounded-2xl border border-pink-100 bg-white p-6 shadow-sm">
+            {/* Contact Form */}
 
-              <BellRing className="text-[#ce0088]" />
+            <div className="space-y-6">
 
-              <p className="mt-4 text-sm text-slate-500">
-                Notifikasi
-              </p>
+              <ContactForm
+                name={name}
+                setName={setName}
+                email={email}
+                setEmail={setEmail}
+                emailError={emailError}
+                setEmailError={setEmailError}
+                editingContactId={editingContactId}
+                onSubmit={handleSubmit}
+                onCancelEdit={handleCancelEdit}
+              />
 
-              <h2 className="mt-2 text-xl font-bold text-primary">
-                Siap Digunakan
-              </h2>
-
-              <p className="mt-2 text-sm text-slate-500">
-                Alert akan dikirim ke Trusted Contact bila diperlukan.
-              </p>
+              <ContactGuideCard />
 
             </div>
 
@@ -106,20 +179,23 @@ export default function TrustedCirclePage() {
 
         </section>
 
-        {/* PLACEHOLDER */}
+        {/* Travel */}
 
-        <section className="max-w-7xl mx-auto px-6 pb-20">
+        <section className="max-w-7xl mx-auto px-6 py-8">
 
-          <div className="rounded-3xl border border-pink-100 bg-white p-14 shadow-sm text-center">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-            <h2 className="text-3xl font-bold text-primary">
-              Trusted Contact
-            </h2>
+            <div className="lg:col-span-2">
 
-            <p className="mt-4 text-slate-500 max-w-xl mx-auto">
-              Pada tahap berikutnya halaman ini akan berisi daftar Trusted
-              Contact, pengaturan perjalanan, serta Check-in Timer.
-            </p>
+              <TravelSetting />
+
+            </div>
+
+            <div>
+
+              <TravelTips />
+
+            </div>
 
           </div>
 
