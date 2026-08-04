@@ -14,11 +14,10 @@ export default function TravelTips() {
       <ul className="mt-5 space-y-3 text-sm text-slate-600">
         <li>• Pastikan email Trusted Contact masih aktif.</li>
 
-        <li>• Aktifkan GPS agar lokasi dapat dibagikan.</li>
+        <li>• Aktifkan lokasi GPS agar posisi dapat dibagikan.</li>
 
-        <li>• Berikan estimasi perjalanan yang realistis.</li>
+        <li>• Perbarui estimasi waktu jika perjalanan lebih lama dari perkiraan. </li>
 
-        <li>• Konfirmasi Sampai Aman sebelum timer habis.</li>
       </ul>
     </div>
   );
