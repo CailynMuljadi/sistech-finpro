@@ -1,85 +1,209 @@
 'use client';
 
-import React from 'react';
-import Link from 'next/link';
-import { Users, UserPlus, AlertCircle } from 'lucide-react';
-import { useTrustedContacts } from '@/hooks/useTrustedContacts';
+import React, { useState } from 'react';
+import Footer from '@/components/Footer';
 
-export const TrustedContactsCard: React.FC = () => {
-  // Pull live contacts & status helpers from your shared hook
-  const { contacts, activeContacts, hasContacts } = useTrustedContacts();
+import { useTrustedContacts, Contact } from '@/hooks/useTrustedContacts';
+
+import {
+  ContactList,
+  ContactForm,
+  ContactGuideCard,
+} from '@/features/Contacts';
+
+import TrustedSummary from '@/features/TrustedCircle/TrustedSummary';
+import TravelSetting from '@/features/TrustedCircle/TravelSetting';
+import TravelTips from '@/features/TrustedCircle/TravelTips';
+
+export default function TrustedCirclePage() {
+  const {
+    contacts,
+    activeContacts,
+    addContact,
+    updateContact,
+    removeContact,
+  } = useTrustedContacts();
+
+  // ===========================
+  // Contact States
+  // ===========================
+
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [editingContactId, setEditingContactId] = useState<string | null>(null);
+
+  // ===========================
+  // Validation
+  // ===========================
+
+  const validateEmail = (inputEmail: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(inputEmail);
+  };
+
+  // ===========================
+  // Edit Contact
+  // ===========================
+
+  const handleStartEdit = (contact: Contact) => {
+    setEditingContactId(contact.id);
+    setName(contact.name);
+    setEmail(contact.email);
+    setEmailError('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingContactId(null);
+    setName('');
+    setEmail('');
+    setEmailError('');
+  };
+
+  // ===========================
+  // Submit Form
+  // ===========================
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!name.trim()) {
+      setEmailError('Nama / label kontak wajib diisi.');
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setEmailError('Format email tidak valid.');
+      return;
+    }
+
+    if (editingContactId) {
+      updateContact(editingContactId, name, email);
+      setEditingContactId(null);
+    } else {
+      addContact(name, email);
+    }
+
+    setName('');
+    setEmail('');
+    setEmailError('');
+  };
+
+  // ===========================
+  // Search
+  // ===========================
+
+  const filteredContacts = contacts.filter(
+    (contact) =>
+      contact.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contact.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  // ===========================
+  // Page
+  // ===========================
 
   return (
-    <div className="bg-white border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between font-sans text-[#17274d] shadow-sm">
-      <div>
+    <>
+      <main className="min-h-screen bg-gradient-to-br from-[#FFF8FC] via-[#FFF2F8] to-[#FFEAF4]">
+
         {/* Header */}
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-bold text-sm tracking-wide uppercase text-[#17274d]">
-            Trusted Contact
-          </h3>
-          <Users className="w-4 h-4 text-[#ce0088]" />
-        </div>
 
-        {/* Count Summary */}
-        <p className="text-xs font-semibold mb-2 text-[#17274d]">
-          {contacts.length === 0
-            ? 'Belum ada kontak'
-            : `${activeContacts.length} dari ${contacts.length} kontak aktif`}
-        </p>
+        <section className="max-w-7xl mx-auto px-6 pt-14">
 
-        {/* Contact List / Empty State */}
-        {contacts.length === 0 ? (
-          <div className="flex items-center gap-2 p-2.5 my-2 bg-[#ffeff7]/60 border border-[#ce0088]/20 rounded-xl text-xs text-[#17274d]/80">
-            <AlertCircle className="w-4 h-4 text-[#ce0088] shrink-0" />
-            <span>Tambahkan kontak untuk mengirim notifikasi darurat.</span>
+          <h1 className="text-4xl font-bold text-primary">
+            Trusted Circle
+          </h1>
+
+          <p className="mt-4 max-w-3xl text-slate-600 leading-7">
+            Pantau perjalananmu dengan lebih tenang.
+            Tambahkan Trusted Contact dan gunakan
+            Check-in Timer agar orang terdekat mengetahui
+            bahwa kamu telah sampai dengan aman.
+          </p>
+
+        </section>
+
+        {/* Summary */}
+
+        <section className="max-w-7xl mx-auto px-6 py-10">
+
+          <TrustedSummary />
+
+        </section>
+
+        {/* Trusted Contact */}
+
+        <section className="max-w-7xl mx-auto px-6">
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            {/* Contact List */}
+
+            <div className="lg:col-span-2">
+
+              <ContactList
+                totalContactsCount={contacts.length}
+                filteredContacts={filteredContacts}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                editingContactId={editingContactId}
+                onEdit={handleStartEdit}
+                onRemove={removeContact}
+              />
+
+            </div>
+
+            {/* Contact Form */}
+
+            <div className="space-y-6">
+
+              <ContactForm
+                name={name}
+                setName={setName}
+                email={email}
+                setEmail={setEmail}
+                emailError={emailError}
+                setEmailError={setEmailError}
+                editingContactId={editingContactId}
+                onSubmit={handleSubmit}
+                onCancelEdit={handleCancelEdit}
+              />
+
+              <ContactGuideCard />
+
+            </div>
+
           </div>
-        ) : (
-          <ul className="text-xs space-y-2 mb-4 opacity-90 pl-1 max-h-28 overflow-y-auto pr-1">
-            {contacts.slice(0, 3).map((contact) => (
-              <li
-                key={contact.id}
-                className="flex items-center justify-between gap-2"
-              >
-                <div className="flex items-center gap-2 truncate">
-                  <span
-                    className={`w-2 h-2 rounded-full shrink-0 ${
-                      contact.status === 'AKTIF' ? 'bg-[#ce0088]' : 'bg-amber-400'
-                    }`}
-                  />
-                  <span className="font-medium text-[#17274d] truncate">
-                    {contact.name}
-                  </span>
-                </div>
-                <span className="text-[10px] text-[#17274d]/60 truncate font-mono">
-                  {contact.email}
-                </span>
-              </li>
-            ))}
-            {contacts.length > 3 && (
-              <li className="text-[10px] text-[#ce0088] font-bold pl-4">
-                +{contacts.length - 3} kontak lainnya
-              </li>
-            )}
-          </ul>
-        )}
 
-        <p className="text-[11px] text-[#17274d]/75 mb-4">
-          {hasContacts
-            ? 'Semua kontak aktif siap menerima notifikasi darurat & lokasi.'
-            : 'SOS akan membunyikan alarm tetapi tidak mengirim email/SMS.'}
-        </p>
-      </div>
+        </section>
 
-      {/* Button linking directly to /kelola-kontak */}
-      <Link
-        href="/kelola-kontak"
-        className="w-full py-2.5 bg-white hover:bg-[#ffeff7]/60 border border-[#17274d]/20 text-[#17274d] font-bold text-xs rounded-xl tracking-wider uppercase transition flex items-center justify-center gap-1.5 shadow-sm active:scale-98"
-      >
-        <UserPlus className="w-3.5 h-3.5 text-[#ce0088]" />
-        KELOLA KONTAK
-      </Link>
-    </div>
+        {/* Travel */}
+
+        <section className="max-w-7xl mx-auto px-6 py-8">
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <div className="lg:col-span-2">
+
+              <TravelSetting />
+
+            </div>
+
+            <div>
+
+              <TravelTips />
+
+            </div>
+
+          </div>
+
+        </section>
+
+      </main>
+
+      <Footer />
+    </>
   );
-};
-
-export default TrustedContactsCard;
+}
