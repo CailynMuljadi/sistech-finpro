@@ -6,24 +6,30 @@ interface Props {
   tripStatusDesc: string;
 }
 
-export default function TrustedSummary({ activeContactsCount, tripStatusLabel, tripStatusDesc }: Props) {
+export default function TrustedSummary({
+  activeContactsCount,
+  tripStatusLabel,
+  tripStatusDesc,
+}: Props) {
   return (
     <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       <Card
-        icon={<Users className="text-pink-500" />}
-        title="Trusted Contact"
+        icon={<Users size={22} />}
+        title="TRUSTED CONTACT"
         value={`${activeContactsCount} Kontak Aktif`}
         desc="Siap menerima notifikasi."
       />
+
       <Card
-        icon={<ShieldCheck className="text-pink-500" />}
-        title="Status"
+        icon={<ShieldCheck size={22} />}
+        title="STATUS PERJALANAN"
         value={tripStatusLabel}
         desc={tripStatusDesc}
       />
+
       <Card
-        icon={<BellRing className="text-pink-500" />}
-        title="Notifikasi"
+        icon={<BellRing size={22} />}
+        title="NOTIFIKASI"
         value="Siap Digunakan"
         desc="Alert akan dikirim bila diperlukan."
       />
@@ -31,13 +37,36 @@ export default function TrustedSummary({ activeContactsCount, tripStatusLabel, t
   );
 }
 
-function Card({ icon, title, value, desc }: { icon: React.ReactNode; title: string; value: string; desc: string }) {
+interface CardProps {
+  icon: React.ReactNode;
+  title: string;
+  value: string;
+  desc: string;
+}
+
+function Card({ icon, title, value, desc }: CardProps) {
   return (
-    <div className="rounded-2xl border border-pink-100 bg-white p-6 shadow-sm">
-      {icon}
-      <p className="mt-4 text-sm text-slate-500">{title}</p>
-      <h2 className="mt-2 text-xl font-bold text-primary">{value}</h2>
-      <p className="mt-2 text-sm text-slate-500">{desc}</p>
+    <div className="rounded-2xl border border-pink-100 bg-white p-6 shadow-sm transition-all duration-300 hover:shadow-md">
+      {/* Icon + Judul */}
+      <div className="flex items-center gap-3">
+        <div className="flex h-6 w-6 items-center justify-center text-pink-500">
+          {icon}
+        </div>
+
+        <p className="text-sm font-medium uppercase tracking-wide text-slate-500">
+          {title}
+        </p>
+      </div>
+
+      {/* Value */}
+      <h2 className="mt-4 text-3xl font-bold text-primary">
+        {value}
+      </h2>
+
+      {/* Description */}
+      <p className="mt-2 text-sm text-slate-500">
+        {desc}
+      </p>
     </div>
   );
 }

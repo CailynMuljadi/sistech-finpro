@@ -11,6 +11,8 @@ interface Props {
 
 export default function TravelSetting({ hasContacts, onStart }: Props) {
   const [selected, setSelected] = useState(30);
+  const [isCustom, setIsCustom] = useState(false);
+  const [customDuration, setCustomDuration] = useState('');
   const [destination, setDestination] = useState('');
 
   const canStart = hasContacts && destination.trim().length > 0;
@@ -25,7 +27,10 @@ export default function TravelSetting({ hasContacts, onStart }: Props) {
           {durations.map((item) => (
             <button
               key={item}
-              onClick={() => setSelected(item)}
+              onClick={() => {
+                setSelected(item);
+                setIsCustom(false);
+              }}
               className={`rounded-lg border px-5 py-2 text-sm transition ${
                 selected === item ? 'border-primary bg-primary text-white' : 'border-slate-300 hover:border-primary'
               }`}
@@ -33,11 +38,43 @@ export default function TravelSetting({ hasContacts, onStart }: Props) {
               {item} Menit
             </button>
           ))}
-          <button className="rounded-lg border border-slate-300 px-5 py-2 text-sm hover:border-primary">
+          <button
+            onClick={() => setIsCustom(true)}
+            className={`rounded-lg border px-5 py-2 text-sm transition ${
+              isCustom
+                ? 'border-primary bg-primary text-white'
+                : 'border-slate-300 hover:border-primary'
+            }`}
+          >
             Custom
           </button>
         </div>
       </div>
+
+      {isCustom && (
+        <div className="mt-4">
+          <input
+            type="number"
+            min={1}
+            placeholder="Masukkan durasi (menit)"
+            value={customDuration}
+            onChange={(e) => {
+              const value = Number(e.target.value);
+
+              if (e.target.value === '') {
+                setCustomDuration('');
+                return;
+              }
+
+              if (value >= 1) {
+                setCustomDuration(e.target.value);
+                setSelected(value);
+              }
+            }}
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none focus:border-primary"
+          />
+        </div>
+      )}
 
       <div className="mt-8">
         <label className="text-sm font-medium text-slate-700">Tujuan Perjalanan</label>

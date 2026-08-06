@@ -37,13 +37,15 @@ export const ContactList: React.FC<ContactListProps> = ({
         </div>
 
         <div className="relative w-full sm:w-56">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-3 text-[#17274d]/40" />
+          <Search
+            className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#17274d]/40"
+          />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Cari kontak..."
-            className="w-full pl-8 pr-3 py-1.5 bg-[#f8f9fa] border border-[#17274d]/20 rounded-xl text-xs text-[#17274d] focus:outline-none focus:border-[#ce0088]"
+            className="w-full h-10 pl-10 pr-3 bg-[#f8f9fa] border border-[#17274d]/20 rounded-xl text-sm text-[#17274d] focus:outline-none focus:border-[#ce0088]"
           />
         </div>
       </div>
