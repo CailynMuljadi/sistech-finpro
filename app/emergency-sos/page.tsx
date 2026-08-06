@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { Check, Clock } from 'lucide-react';
+import Footer from '@/components/Footer';
 
 // Feature Component Imports
 import { LocationStatusCard } from '@/features/Emergency/LocationStatusCard';
@@ -24,6 +25,7 @@ function getInitialPin(): string {
 function getInitialHistory(): SosHistoryItem[] {
   if (typeof window === 'undefined') return [];
   const saved = localStorage.getItem('sos_history');
+
   if (saved) {
     try {
       return JSON.parse(saved);
@@ -32,12 +34,13 @@ function getInitialHistory(): SosHistoryItem[] {
       return [];
     }
   }
+
   return [];
 }
 
 export default function EmergencyPage() {
   const [isSosActive, setIsSosActive] = useState(false);
-  const [pin, setPin] = useState<string>(getInitialPin);
+  const [pin] = useState<string>(getInitialPin);
   const [history, setHistory] = useState<SosHistoryItem[]>(getInitialHistory);
 
   const saveHistory = (newHistory: SosHistoryItem[]) => {
@@ -65,23 +68,30 @@ export default function EmergencyPage() {
 
     if (history.length > 0) {
       const updatedHistory = history.map((item, index) =>
-        index === 0 ? { ...item, status: 'Selesai' as const } : item
+        index === 0
+          ? {
+              ...item,
+              status: 'Selesai' as const,
+            }
+          : item
       );
+
       saveHistory(updatedHistory);
     }
   };
 
-  // Reusable SOS Button Card Component
+  // SOS Button Card
   const SosCardComponent = (
     <div className="bg-white border border-[#17274d]/15 p-6 rounded-2xl flex flex-col items-center justify-center text-center shadow-sm">
       <SosButton onTrigger={handleSosTrigger} correctPin={pin} />
+
       <p className="text-[11px] text-[#17274d]/70 mt-4">
         Tekan dan tahan selama 2 detik untuk mengaktifkan Emergency SOS.
       </p>
     </div>
   );
 
-  // Reusable History Component
+  // History Card
   const HistoryComponent = (
     <div className="bg-white border border-[#17274d]/15 p-6 rounded-2xl shadow-sm">
       <div className="flex items-center justify-between mb-4">
@@ -89,6 +99,7 @@ export default function EmergencyPage() {
           <Clock className="w-4 h-4 text-[#ce0088]" />
           Riwayat Emergency SOS
         </h3>
+
         {history.length > 0 && (
           <button
             onClick={() => saveHistory([])}
@@ -114,6 +125,7 @@ export default function EmergencyPage() {
                 <div className="font-bold text-[#17274d]">
                   Pemicu SOS Darurat
                 </div>
+
                 <div className="text-[11px] text-[#17274d]/70 font-mono">
                   {item.timestamp}
                 </div>
@@ -136,84 +148,102 @@ export default function EmergencyPage() {
   );
 
   return (
-    <div className="min-h-screen bg-[#ffeff7] text-[#17274d] font-sans p-4 md:p-8">
-      <div className="max-w-7xl mx-auto space-y-6">
-        {/* Render Active View when triggered */}
-        {isSosActive ? (
-          <SosActiveView onStandDown={handleStandDown} correctPin={pin} />
-        ) : (
-          <>
-            {/* Top Status Indicator Bar */}
-            <div className="flex flex-col md:flex-row md:items-center justify-between text-xs bg-white border border-[#17274d]/15 p-3 rounded-xl gap-2 shadow-sm">
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
-                <span>
-                  Lokasi terdeteksi • Trusted Circle aktif • Tidak ada peringatan darurat
-                </span>
-              </div>
-              <div className="flex items-center gap-4 text-[11px] font-bold text-[#ce0088]">
-                <span>LOKASI <Check className="w-3.5 h-3.5 inline" /></span>
-                <span>KONTAK <Check className="w-3.5 h-3.5 inline" /></span>
-                <span>STATUS AMAN</span>
-              </div>
-            </div>
+    <div className="min-h-screen flex flex-col">
+      {/* MAIN CONTENT */}
+      <main className="flex-1 bg-[#ffeff7] text-[#17274d] font-sans p-4 md:p-8">
+        <div className="max-w-7xl mx-auto space-y-6">
+          {isSosActive ? (
+            <SosActiveView
+              onStandDown={handleStandDown}
+              correctPin={pin}
+            />
+          ) : (
+            <>
+              {/* Top Status */}
+              <div className="flex flex-col md:flex-row md:items-center justify-between text-xs bg-white border border-[#17274d]/15 p-3 rounded-xl gap-2 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
 
-            {/* Page Header */}
-            <div>
-              <h1 className="text-2xl md:text-3xl font-black text-[#17274d]">
-                Emergency SOS
-              </h1>
-              <p className="text-xs md:text-sm text-[#17274d]/75 mt-1">
-                Aktifkan bantuan darurat dengan cepat ketika berada dalam situasi yang mengancam.
-              </p>
-            </div>
+                  <span>
+                    Lokasi terdeteksi • Trusted Circle aktif • Tidak ada
+                    peringatan darurat
+                  </span>
+                </div>
 
-            {/* 📱 MOBILE ONLY: SOS Button comes FIRST before any cards */}
-            <div className="block lg:hidden">
-              {SosCardComponent}
-            </div>
+                <div className="flex items-center gap-4 text-[11px] font-bold text-[#ce0088]">
+                  <span>
+                    LOKASI <Check className="w-3.5 h-3.5 inline" />
+                  </span>
 
-            {/* 🖥️ DESKTOP & MOBILE CARDS GRID */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              {/* Card 1: Cara Menggunakan SOS */}
-              <div className="bg-white border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between shadow-sm">
-                <div>
-                  <h3 className="font-bold text-sm tracking-wide uppercase mb-3 text-[#17274d]">
-                    Cara Menggunakan SOS
-                  </h3>
-                  <ol className="text-xs space-y-2 text-[#17274d]/85 list-decimal pl-4">
-                    <li>Tekan & tahan tombol SOS selama 2 detik.</li>
-                    <li>Sistem memberi waktu 3 detik untuk membatalkan menggunakan PIN.</li>
-                    <li>Jika tidak dibatalkan, lokasi akan dikirim ke Trusted Contact dan alarm aktif.</li>
-                  </ol>
+                  <span>
+                    KONTAK <Check className="w-3.5 h-3.5 inline" />
+                  </span>
+
+                  <span>STATUS AMAN</span>
                 </div>
               </div>
 
-              {/* Card 2: Trusted Contacts */}
-              <TrustedContactsCard />
+              {/* Header */}
+              <div>
+                <h1 className="text-2xl md:text-3xl font-black text-[#17274d]">
+                  Emergency SOS
+                </h1>
 
-              {/* Card 3: Location Status */}
-              <LocationStatusCard />
-
-              {/* Card 4: Ubah PIN Card */}
-              <PinDaruratCard />
-            </div>
-
-            {/* LOWER ROW */}
-            <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-6 pt-2">
-              {/* Riwayat Emergency SOS (Takes 2 cols on Desktop) */}
-              <div className="lg:col-span-2">
-                {HistoryComponent}
+                <p className="text-xs md:text-sm text-[#17274d]/75 mt-1">
+                  Aktifkan bantuan darurat dengan cepat ketika berada dalam
+                  situasi yang mengancam.
+                </p>
               </div>
 
-              {/* 🖥️ DESKTOP ONLY: SOS Button card at bottom-right */}
-              <div className="hidden lg:block lg:col-span-1">
+              {/* Mobile SOS */}
+              <div className="block lg:hidden">
                 {SosCardComponent}
               </div>
-            </div>
-          </>
-        )}
-      </div>
+
+              {/* Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-white border border-[#17274d]/15 p-5 rounded-2xl flex flex-col justify-between shadow-sm">
+                  <div>
+                    <h3 className="font-bold text-sm tracking-wide uppercase mb-3 text-[#17274d]">
+                      Cara Menggunakan SOS
+                    </h3>
+
+                    <ol className="text-xs space-y-2 text-[#17274d]/85 list-decimal pl-4">
+                      <li>Tekan & tahan tombol SOS selama 2 detik.</li>
+                      <li>
+                        Sistem memberi waktu 3 detik untuk membatalkan
+                        menggunakan PIN.
+                      </li>
+                      <li>
+                        Jika tidak dibatalkan, lokasi akan dikirim ke Trusted
+                        Contact dan alarm aktif.
+                      </li>
+                    </ol>
+                  </div>
+                </div>
+
+                <TrustedContactsCard />
+                <LocationStatusCard />
+                <PinDaruratCard />
+              </div>
+
+              {/* Bottom Section */}
+              <div className="space-y-6 lg:space-y-0 lg:grid lg:grid-cols-3 lg:gap-6 pt-2">
+                <div className="lg:col-span-2">
+                  {HistoryComponent}
+                </div>
+
+                <div className="hidden lg:block lg:col-span-1">
+                  {SosCardComponent}
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+      </main>
+
+      {/* FOOTER */}
+      <Footer />
     </div>
   );
 }

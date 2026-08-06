@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Footer from '@/components/Footer';
 
 import LocationPermissionModal from '@/components/LocationPermissionModal';
 
@@ -31,8 +32,7 @@ export default function SafeRoutePage() {
   const [time, setTime] = useState('');
 
   // Route terpilih
-  const [selectedRoute, setSelectedRoute] =
-    useState<RouteData | null>(null);
+  const [selectedRoute, setSelectedRoute] = useState<RouteData | null>(null);
 
   // Cari Route
   const handleSearch = () => {
@@ -67,46 +67,43 @@ export default function SafeRoutePage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#ffeff7]">
+    <div className="min-h-screen flex flex-col">
+      {/* Main Content */}
+      <main className="flex-1 bg-[#ffeff7]">
+        <LocationPermissionModal
+          isOpen={showLocationModal}
+          onAllow={() => setShowLocationModal(false)}
+          onSkip={() => setShowLocationModal(false)}
+        />
 
-      <LocationPermissionModal
-        isOpen={showLocationModal}
-        onAllow={() => setShowLocationModal(false)}
-        onSkip={() => setShowLocationModal(false)}
-      />
+        <div className="max-w-6xl mx-auto px-6 py-10">
+          {(step === 'search' || step === 'result') && (
+            <div className="space-y-8">
+              <SafeRouteHeader />
 
-      <div className="max-w-6xl mx-auto px-6 py-10">
-
-        {(step === 'search' || step === 'result') && (
-          <div className="space-y-8">
-
-            <SafeRouteHeader />
-
-            <RouteSearchCard
-              origin={origin}
-              destination={destination}
-              travelMode={travelMode}
-              date={date}
-              time={time}
-              onOriginChange={setOrigin}
-              onDestinationChange={setDestination}
-              onTravelModeChange={setTravelMode}
-              onDateChange={setDate}
-              onTimeChange={setTime}
-              onSearch={handleSearch}
-            />
-
-            {step === 'result' && (
-              <RouteResultList
-                onSelect={handleSelectRoute}
+              <RouteSearchCard
+                origin={origin}
+                destination={destination}
+                travelMode={travelMode}
+                date={date}
+                time={time}
+                onOriginChange={setOrigin}
+                onDestinationChange={setDestination}
+                onTravelModeChange={setTravelMode}
+                onDateChange={setDate}
+                onTimeChange={setTime}
+                onSearch={handleSearch}
               />
-            )}
 
-          </div>
-        )}
+              {step === 'result' && (
+                <RouteResultList
+                  onSelect={handleSelectRoute}
+                />
+              )}
+            </div>
+          )}
 
-        {step === 'detail' &&
-          selectedRoute && (
+          {step === 'detail' && selectedRoute && (
             <RouteDetail
               route={selectedRoute}
               onBack={() => setStep('result')}
@@ -114,8 +111,7 @@ export default function SafeRoutePage() {
             />
           )}
 
-        {step === 'journey' &&
-          selectedRoute && (
+          {step === 'journey' && selectedRoute && (
             <JourneyStarted
               route={selectedRoute}
               origin={origin}
@@ -123,8 +119,11 @@ export default function SafeRoutePage() {
               onFinish={handleFinishJourney}
             />
           )}
+        </div>
+      </main>
 
-      </div>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }
