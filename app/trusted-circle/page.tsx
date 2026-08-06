@@ -19,7 +19,7 @@ export default function TrustedCirclePage() {
   const { trip, remainingSeconds, remainingLabel, startTrip, extendTime, confirmSafe, resetTrip } =
     useTripTimer();
 
-  // ===== Contact form state & handlers (sama seperti sebelumnya) =====
+  // ===== Contact form state & handlers =====
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -79,32 +79,35 @@ export default function TrustedCirclePage() {
     ? 'Konfirmasi telah diterima.'
     : `Tujuan: ${trip.destination}`;
 
-  const showSetup = !trip || trip.status === 'confirmed' ? !trip : false;
   // trip aktif (active/grace/alerted) -> tampilkan TripStatusView
   // trip confirmed -> tampilkan TripConfirmedView
-  // belum ada trip -> tampilkan setup (contact + travel setting)
+  // belum ada trip -> tampilkan setup (hero + summary + contact + travel setting)
 
   return (
     <>
       <main className="min-h-screen bg-gradient-to-br from-[#FFF8FC] via-[#FFF2F8] to-[#FFEAF4]">
-        <section className="max-w-7xl mx-auto px-6 pt-14">
-          <h1 className="text-4xl font-bold text-primary">Trusted Circle</h1>
-          <p className="mt-4 max-w-3xl leading-7 text-slate-600">
-            Pantau perjalananmu dengan lebih tenang. Tambahkan Trusted Contact dan gunakan
-            Check-in Timer agar orang terdekat mengetahui bahwa kamu telah sampai dengan aman.
-          </p>
-        </section>
+        {!trip && (
+          <>
+            <section className="max-w-7xl mx-auto px-6 pt-14">
+              <h1 className="text-4xl font-bold text-primary">Trusted Circle</h1>
+              <p className="mt-4 max-w-3xl leading-7 text-slate-600">
+                Pantau perjalananmu dengan lebih tenang. Tambahkan Trusted Contact dan gunakan
+                Check-in Timer agar orang terdekat mengetahui bahwa kamu telah sampai dengan aman.
+              </p>
+            </section>
 
-        <section className="max-w-7xl mx-auto px-6 py-10">
-          <TrustedSummary
-            activeContactsCount={activeContacts.length}
-            tripStatusLabel={tripStatusLabel}
-            tripStatusDesc={tripStatusDesc}
-          />
-        </section>
+            <section className="max-w-7xl mx-auto px-6 py-10">
+              <TrustedSummary
+                activeContactsCount={activeContacts.length}
+                tripStatusLabel={tripStatusLabel}
+                tripStatusDesc={tripStatusDesc}
+              />
+            </section>
+          </>
+        )}
 
         {trip && trip.status !== 'confirmed' && (
-          <section className="pb-14">
+          <section className=" pt-14 pb-14">
             <TripStatusView
               trip={trip}
               remainingSeconds={remainingSeconds}
@@ -117,7 +120,7 @@ export default function TrustedCirclePage() {
         )}
 
         {trip && trip.status === 'confirmed' && (
-          <section className="pb-14">
+          <section className="pt-14 pb-14">
             <TripConfirmedView
               trip={trip}
               trustedContactCount={contacts.length}
