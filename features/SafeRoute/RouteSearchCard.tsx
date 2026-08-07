@@ -1,4 +1,7 @@
 import { TravelTimeSelector } from './TravelTimeSelector';
+import { LocationAutocomplete } from './LocationAutocomplete';
+import { PlaceSuggestion, LatLng } from '@/app/lib/mapApi';
+import { Crosshair } from 'lucide-react';
 
 interface Props {
   origin: string;
@@ -9,8 +12,13 @@ interface Props {
   date: string;
   time: string;
 
+  currentLocation?: LatLng | null;
+
   onOriginChange: (value: string) => void;
+  onOriginSelect: (place: PlaceSuggestion) => void;
   onDestinationChange: (value: string) => void;
+  onDestinationSelect: (place: PlaceSuggestion) => void;
+  onUseCurrentLocation: () => void;
 
   onTravelModeChange: (mode: 'now' | 'schedule') => void;
 
@@ -26,8 +34,12 @@ export function RouteSearchCard({
   travelMode,
   date,
   time,
+  currentLocation,
   onOriginChange,
+  onOriginSelect,
   onDestinationChange,
+  onDestinationSelect,
+  onUseCurrentLocation,
   onTravelModeChange,
   onDateChange,
   onTimeChange,
@@ -39,42 +51,45 @@ export function RouteSearchCard({
       <div className="space-y-6">
 
         <div>
+          <div className="flex items-center justify-between">
+            <label className="text-xs font-bold uppercase">Lokasi Asal</label>
+            <button
+              type="button"
+              onClick={onUseCurrentLocation}
+              className="flex items-center gap-1 text-xs font-semibold text-[#ce0088] hover:underline"
+            >
+              <Crosshair className="w-3 h-3" />
+              Gunakan lokasi saat ini
+            </button>
+          </div>
 
-          <label className="text-xs font-bold uppercase">
-            Lokasi Asal
-          </label>
-
-          <input
-            value={origin}
-            onChange={(e) => onOriginChange(e.target.value)}
-            className="mt-2 w-full rounded-lg border bg-[#fff6f6] px-4 py-3"
-          />
-
+          <div className="mt-2">
+            <LocationAutocomplete
+              value={origin}
+              placeholder="Masukkan lokasi asal..."
+              biasCoord={currentLocation || undefined}
+              onChange={onOriginChange}
+              onSelectPlace={onOriginSelect}
+            />
+          </div>
         </div>
 
         <div>
-
-          <label className="text-xs font-bold uppercase">
-            Tujuan
-          </label>
-
-          <input
-            value={destination}
-            onChange={(e) => onDestinationChange(e.target.value)}
-            placeholder="Masukkan tujuan..."
-            className="mt-2 w-full rounded-lg border bg-[#fff6f6] px-4 py-3"
-          />
-
+          <label className="text-xs font-bold uppercase">Tujuan</label>
+          <div className="mt-2">
+            <LocationAutocomplete
+              value={destination}
+              placeholder="Masukkan tujuan..."
+              biasCoord={currentLocation || undefined}
+              onChange={onDestinationChange}
+              onSelectPlace={onDestinationSelect}
+            />
+          </div>
         </div>
 
         <div>
-
-          <label className="text-xs font-bold uppercase">
-            Waktu Perjalanan
-          </label>
-
+          <label className="text-xs font-bold uppercase">Waktu Perjalanan</label>
           <div className="mt-3">
-
             <TravelTimeSelector
               travelMode={travelMode}
               date={date}
@@ -83,9 +98,7 @@ export function RouteSearchCard({
               onDateChange={onDateChange}
               onTimeChange={onTimeChange}
             />
-
           </div>
-
         </div>
 
         <button

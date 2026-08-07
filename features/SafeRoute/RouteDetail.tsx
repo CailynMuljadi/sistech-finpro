@@ -10,12 +10,18 @@ import { SafetyTipsCard } from './SafetyTipsCard';
 
 interface RouteDetailProps {
   route: RouteData;
+  originCoord?: [number, number];
+  destCoord?: [number, number];
+  routeCoords?: [number, number][];
   onBack: () => void;
   onStart: () => void;
 }
 
 export function RouteDetail({
   route,
+  originCoord,
+  destCoord,
+  routeCoords,
   onBack,
   onStart,
 }: RouteDetailProps) {
@@ -47,7 +53,12 @@ export function RouteDetail({
 
         {/* Map */}
         <div className="lg:col-span-2">
-          <MapPreview destination={route.destination} />
+          <MapPreview
+            destination={route.destination}
+            originCoord={originCoord}
+            destCoord={destCoord}
+            routeCoords={routeCoords}
+          />
         </div>
 
         {/* Sidebar */}
