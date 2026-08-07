@@ -41,10 +41,10 @@ export default function TrustedCirclePreview() {
           <div className="flex justify-center">
 
             <Image
-              src="/trusted-circle-phone.png"
+              src="/trusted-circle.png"
               alt="Trusted Circle"
-              width={320}
-              height={650}
+              width={520}
+              height={850}
               className="drop-shadow-2xl"
             />
 

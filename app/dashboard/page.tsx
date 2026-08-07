@@ -27,9 +27,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-[#ffeff7] text-[#17274d] p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto">
         
-        {/* ========================================================
-            1. MOBILE VIEW (Visible on screens smaller than md / 768px)
-            ======================================================== */}
+        {/* 1. MOBILE VIEW (Visible on screens smaller than md / 768px)*/}
         <div className="block md:hidden space-y-5">
           {/* Mobile Header Greeting */}
           <div className="flex items-center justify-between">

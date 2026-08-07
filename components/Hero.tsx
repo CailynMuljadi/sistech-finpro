@@ -141,10 +141,10 @@ export default function Hero(): React.ReactElement {
               <div className="absolute inset-0 rounded-full bg-[#ffd4ea] blur-[100px] opacity-80 scale-95" />
 
               <Image
-                src="/hero-image.png"
-                alt="SafeStep Hero"
-                width={550}
-                height={550}
+                src="/logo.png"
+                alt="SafeStep Logo"
+                width={420}
+                height={420}
                 priority
                 className="relative object-contain"
               />

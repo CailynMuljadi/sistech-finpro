@@ -84,7 +84,7 @@ export default function Navbar() {
           </Link>
         </Show>
 
-        {/* ================= MENU DESKTOP ================= */}
+        {/* MENU DESKTOP */}
 
         <div className="hidden lg:flex items-center gap-10">
 
@@ -114,7 +114,7 @@ export default function Navbar() {
 
         </div>
 
-        {/* ================= RIGHT ================= */}
+        {/* RIGHT */}
 
         <div className="flex items-center gap-4">
 
@@ -173,7 +173,7 @@ export default function Navbar() {
 
       </div>
 
-      {/* ================= MOBILE MENU ================= */}
+      {/* MOBILE MENU */}
 
       {open && (
 
