@@ -1,3 +1,5 @@
+'use client';
+
 import { RouteData } from "./data";
 import { MapPreview } from "./MapPreview";
 
@@ -5,6 +7,9 @@ interface Props {
   route: RouteData;
   origin: string;
   destination: string;
+  originCoord?: [number, number];
+  destCoord?: [number, number];
+  routeCoords?: [number, number][];
   onFinish: () => void;
 }
 
@@ -12,6 +17,9 @@ export function JourneyStarted({
   route,
   origin,
   destination,
+  originCoord,
+  destCoord,
+  routeCoords,
   onFinish,
 }: Props) {
   return (
@@ -77,7 +85,12 @@ export function JourneyStarted({
 
         </div>
 
-        <MapPreview destination={destination} />
+        <MapPreview
+          destination={destination}
+          originCoord={originCoord}
+          destCoord={destCoord}
+          routeCoords={routeCoords}
+        />
 
         <button
           onClick={onFinish}

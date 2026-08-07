@@ -13,7 +13,7 @@ import { JourneyStarted } from '@/features/SafeRoute/JourneyStarted';
 import { routes as dummyRoutes, RouteData } from '@/features/SafeRoute/data';
 import { getRiskScoreBatch, mapRiskLevel, BatchResultItem } from '@/app/lib/riskApi';
 import {
-  getRoute,
+  getRouteAlternatives,
   getCurrentLocation,
   reverseGeocode,
   LatLng,
@@ -51,20 +51,20 @@ export default function SafeRoutePage() {
   const [locationError, setLocationError] = useState<string | null>(null);
 
   async function requestCurrentLocation() {
-  try {
-    const coord = await getCurrentLocation();
-    setCurrentLocation(coord);
-    setOriginPoint(coord);
-    setLocationError(null);
+    try {
+      const coord = await getCurrentLocation();
+      setCurrentLocation(coord);
+      setOriginPoint(coord);
+      setLocationError(null);
 
-    const address = await reverseGeocode(coord.lat, coord.lon);
-    if (address) setOrigin(address);
-  } catch (err) {
-    setLocationError(err instanceof Error ? err.message : 'Gagal mengambil lokasi.');
+      const address = await reverseGeocode(coord.lat, coord.lon);
+      if (address) setOrigin(address);
+    } catch (err) {
+      setLocationError(err instanceof Error ? err.message : 'Gagal mengambil lokasi.');
+    }
   }
-}
 
-useEffect(() => {
+  useEffect(() => {
     let cancelled = false;
 
     async function initLocation() {
@@ -116,47 +116,58 @@ useEffect(() => {
     setRouteError(null);
 
     try {
-      const routeResult = await getRoute(originPoint, destPoint);
-      if (!routeResult) throw new Error('Rute tidak ditemukan untuk lokasi ini.');
+      const alternatives = await getRouteAlternatives(originPoint, destPoint, 3);
+      if (!alternatives.length) throw new Error('Rute tidak ditemukan untuk lokasi ini.');
 
       setOriginCoord([originPoint.lat, originPoint.lon]);
       setDestCoord([destPoint.lat, destPoint.lon]);
-      setRouteCoords(routeResult.coords);
-
-      const MAX_BATCH_POINTS = 400;
-      const step = Math.max(1, Math.ceil(routeResult.coords.length / MAX_BATCH_POINTS));
-      const sampledPoints = routeResult.coords.filter((_, i) => i % step === 0);
 
       const datetime =
         travelMode === 'schedule' && date && time
           ? `${date}T${time}:00`
           : new Date().toISOString().slice(0, 19);
 
-      const riskBatch = await getRiskScoreBatch(
-        sampledPoints.map(([lat, lon]) => ({ lat, lon, datetime }))
+      // Hitung risk score tiap rute alternatif secara paralel
+      const routesWithRisk = await Promise.all(
+        alternatives.map(async (alt) => {
+          const MAX_BATCH_POINTS = 200;
+          const step = Math.max(1, Math.ceil(alt.coords.length / MAX_BATCH_POINTS));
+          const sampledPoints = alt.coords.filter((_, i) => i % step === 0);
+
+          const riskBatch = await getRiskScoreBatch(
+            sampledPoints.map(([lat, lon]) => ({ lat, lon, datetime }))
+          );
+
+          const validResults = riskBatch.results.filter(
+            (r: BatchResultItem) => r.status !== 'error'
+          );
+          const avgRisk =
+            validResults.reduce((sum: number, r: BatchResultItem) => sum + (r.risk_score || 0), 0) /
+            (validResults.length || 1);
+
+          return { alt, avgRisk };
+        })
       );
 
-      const validResults = riskBatch.results.filter(
-        (r: BatchResultItem) => r.status !== 'error'
-      );
-      const avgRisk =
-        validResults.reduce(
-          (sum: number, r: BatchResultItem) => sum + (r.risk_score || 0),
-          0
-        ) / (validResults.length || 1);
+      // Urutkan dari risiko terendah -> tertinggi
+      routesWithRisk.sort((a, b) => a.avgRisk - b.avgRisk);
 
-      const riskLabel = mapRiskLevel(
-        avgRisk >= 75 ? 'Critical' : avgRisk >= 50 ? 'High' : avgRisk >= 25 ? 'Medium' : 'Low'
-      );
-
-      const updatedRoutes = dummyRoutes.map((r, i) => ({
-        ...r,
+      const updatedRoutes: RouteData[] = routesWithRisk.map(({ alt, avgRisk }, i) => ({
+        id: i + 1,
+        recommended: i === 0,
         origin,
         destination,
-        distance: i === 0 ? `${routeResult.distanceKm.toFixed(1)} KM` : r.distance,
-        duration: i === 0 ? `${Math.round(routeResult.durationMin)} menit` : r.duration,
-        risk: i === 0 ? riskLabel : r.risk,
+        path: alt.pathLabel,
+        distance: `${alt.distanceKm.toFixed(1)} KM`,
+        duration: `${Math.round(alt.durationMin)} menit`,
+        risk: mapRiskLevel(
+          avgRisk >= 75 ? 'Critical' : avgRisk >= 50 ? 'High' : avgRisk >= 25 ? 'Medium' : 'Low'
+        ),
+        safePoint: dummyRoutes[i]?.safePoint ?? 1,
       }));
+
+      // Rute paling direkomendasikan (index 0) yang dipakai buat preview peta
+      setRouteCoords(routesWithRisk[0].alt.coords);
 
       setRoutes(updatedRoutes);
       setStep('result');
@@ -253,6 +264,9 @@ useEffect(() => {
               route={selectedRoute}
               origin={origin}
               destination={destination}
+              originCoord={originCoord}
+              destCoord={destCoord}
+              routeCoords={routeCoords}
               onFinish={handleFinishJourney}
             />
           )}

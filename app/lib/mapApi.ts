@@ -49,8 +49,15 @@ export interface RouteResult {
   durationMin: number;
 }
 
+export interface RouteResult {
+  coords: [number, number][];
+  distanceKm: number;
+  durationMin: number;
+  pathLabel: string; // nama jalan-jalan yang dilewati,
+}
+
 export async function getRoute(origin: LatLng, dest: LatLng): Promise<RouteResult | null> {
-  const url = `https://router.project-osrm.org/route/v1/foot/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=full&geometries=geojson`;
+  const url = `https://router.project-osrm.org/route/v1/foot/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=full&geometries=geojson&steps=true`;
   const res = await fetch(url);
   const data = await res.json();
   if (!data.routes?.length) return null;
@@ -60,7 +67,74 @@ export async function getRoute(origin: LatLng, dest: LatLng): Promise<RouteResul
     (pair: [number, number]) => [pair[1], pair[0]]
   );
 
-  return { coords, distanceKm: route.distance / 1000, durationMin: route.duration / 60 };
+
+  // Ambil nama jalan dari tiap step, buang yang kosong/duplikat berurutan
+  const streetNames: string[] = [];
+  for (const leg of route.legs || []) {
+    for (const step of leg.steps || []) {
+      const name = step.name?.trim();
+      if (name && streetNames[streetNames.length - 1] !== name) {
+        streetNames.push(name);
+      }
+    }
+  }
+
+  // Batasi maksimal 4 nama jalan biar nggak kepanjangan di UI
+  const pathLabel =
+    streetNames.length > 0
+      ? streetNames.slice(0, 4).join(' → ')
+      : 'Rute melalui jalan utama';
+
+  return {
+    coords,
+    distanceKm: route.distance / 1000,
+    durationMin: route.duration / 60,
+    pathLabel,
+  };
+}
+
+export async function getRouteAlternatives(
+  origin: LatLng,
+  dest: LatLng,
+  maxAlternatives = 3
+): Promise<RouteResult[]> {
+  const url = `https://router.project-osrm.org/route/v1/foot/${origin.lon},${origin.lat};${dest.lon},${dest.lat}?overview=full&geometries=geojson&steps=true&alternatives=true`;
+  const res = await fetch(url);
+  const data = await res.json();
+  if (!data.routes?.length) return [];
+
+  return data.routes.slice(0, maxAlternatives).map((route: {
+    geometry: { coordinates: [number, number][] };
+    legs?: { steps?: { name?: string }[] }[];
+    distance: number;
+    duration: number;
+  }) => {
+    const coords: [number, number][] = route.geometry.coordinates.map(
+      (pair: [number, number]) => [pair[1], pair[0]]
+    );
+
+    const streetNames: string[] = [];
+    for (const leg of route.legs || []) {
+      for (const step of leg.steps || []) {
+        const name = step.name?.trim();
+        if (name && streetNames[streetNames.length - 1] !== name) {
+          streetNames.push(name);
+        }
+      }
+    }
+
+    const pathLabel =
+      streetNames.length > 0
+        ? streetNames.slice(0, 4).join(' → ')
+        : 'Rute melalui jalan utama';
+
+    return {
+      coords,
+      distanceKm: route.distance / 1000,
+      durationMin: route.duration / 60,
+      pathLabel,
+    };
+  });
 }
 
 
