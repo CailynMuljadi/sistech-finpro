@@ -8,8 +8,8 @@ interface ContactFormProps {
   setName: (val: string) => void;
   email: string;
   setEmail: (val: string) => void;
-  status: 'AKTIF' | 'PERLU DIPERBARUI';
-  setStatus: (val: 'AKTIF' | 'PERLU DIPERBARUI') => void;
+  status?: 'AKTIF' | 'PERLU DIPERBARUI';
+  setStatus?: (val: 'AKTIF' | 'PERLU DIPERBARUI') => void;
   emailError: string;
   setEmailError: (val: string) => void;
   editingContactId: string | null;
@@ -90,8 +90,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({
           </p>
         )}
 
-        {/* Toggle status — cuma muncul waktu lagi edit kontak yang sudah ada */}
-        {editingContactId && (
+        {/* Toggle status — cuma muncul kalau parent nyediain status & setStatus (mis. trusted-circle) */}
+        {editingContactId && status && setStatus && (
           <div>
             <label className="text-[10px] font-bold uppercase text-[#17274d]/70 block mb-1">
               STATUS KONTAK
