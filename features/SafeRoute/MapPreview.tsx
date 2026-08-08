@@ -36,11 +36,13 @@ export function MapPreview({ destination, originCoord, destCoord, routeCoords }:
       <h3 className="font-bold text-lg mb-4">Preview Rute</h3>
 
       {hasMapData ? (
-        <LeafletMap
-          originCoord={originCoord!}
-          destCoord={destCoord!}
-          routeCoords={routeCoords || []}
-        />
+        <div className="overflow-hidden rounded-xl">
+          <LeafletMap
+            originCoord={originCoord!}
+            destCoord={destCoord!}
+            routeCoords={routeCoords || []}
+          />
+        </div>
       ) : (
         <div className="h-[500px] rounded-xl bg-gray-100 flex items-center justify-center">
           <div className="text-center">

@@ -49,9 +49,9 @@ export function useTrustedContacts() {
     localStorage.setItem('trusted_contacts', JSON.stringify(updated));
   };
 
-  const updateContact = (id: string, name: string, email: string) => {
+  const updateContact = (id: string, name: string, email: string, status: Contact['status']) => {
     const updated = contacts.map((c) =>
-      c.id === id ? { ...c, name, email, status: 'AKTIF' as const } : c
+      c.id === id ? { ...c, name, email, status } : c
     );
     setContacts(updated);
     localStorage.setItem('trusted_contacts', JSON.stringify(updated));

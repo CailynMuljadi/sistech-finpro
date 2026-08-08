@@ -243,7 +243,14 @@ export default function SafeRoutePage() {
               {routeError && <p className="text-sm text-red-500">{routeError}</p>}
 
               {step === 'result' && !loadingRoutes && (
-                <RouteResultList routes={routes} onSelect={handleSelectRoute} />
+                <>
+                  {routes.length === 1 && (
+                    <p className="text-sm text-gray-500 mb-2">
+                      Saat ini hanya ditemukan 1 rute yang tervalidasi untuk lokasi ini.
+                    </p>
+                  )}
+                  <RouteResultList routes={routes} onSelect={handleSelectRoute} />
+                </>
               )}
             </div>
           )}

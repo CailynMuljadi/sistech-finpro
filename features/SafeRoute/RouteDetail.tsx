@@ -1,6 +1,6 @@
 'use client';
 
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, AlertTriangle } from 'lucide-react';
 
 import { RouteData } from './data';
 import { MapPreview } from './MapPreview';
@@ -17,6 +17,14 @@ interface RouteDetailProps {
   onStart: () => void;
 }
 
+const LONG_DISTANCE_THRESHOLD_KM = 5;
+
+function parseDistanceKm(distance: string): number {
+  // "12,2 KM" atau "12.2 KM" -> 12.2
+  const cleaned = distance.replace(',', '.').replace(/[^\d.]/g, '');
+  return parseFloat(cleaned) || 0;
+}
+
 export function RouteDetail({
   route,
   originCoord,
@@ -25,6 +33,9 @@ export function RouteDetail({
   onBack,
   onStart,
 }: RouteDetailProps) {
+  const distanceKm = parseDistanceKm(route.distance);
+  const isLongDistance = distanceKm > LONG_DISTANCE_THRESHOLD_KM;
+
   return (
     <div className="space-y-6">
 
@@ -47,6 +58,17 @@ export function RouteDetail({
           Berikut informasi keamanan dari rute yang dipilih.
         </p>
       </div>
+
+      {/* Warning jarak jauh */}
+      {isLongDistance && (
+        <div className="flex items-start gap-3 rounded-xl border border-orange-200 bg-orange-50 px-5 py-4">
+          <AlertTriangle className="mt-0.5 h-5 w-5 flex-shrink-0 text-orange-500" />
+          <p className="text-sm text-orange-700">
+            Jarak rute ini ({route.distance}) cukup jauh untuk ditempuh dengan berjalan kaki.
+            Pertimbangkan menggunakan moda transportasi lain untuk perjalanan yang lebih aman dan efisien.
+          </p>
+        </div>
+      )}
 
       {/* Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

@@ -8,6 +8,8 @@ interface ContactFormProps {
   setName: (val: string) => void;
   email: string;
   setEmail: (val: string) => void;
+  status: 'AKTIF' | 'PERLU DIPERBARUI';
+  setStatus: (val: 'AKTIF' | 'PERLU DIPERBARUI') => void;
   emailError: string;
   setEmailError: (val: string) => void;
   editingContactId: string | null;
@@ -20,6 +22,8 @@ export const ContactForm: React.FC<ContactFormProps> = ({
   setName,
   email,
   setEmail,
+  status,
+  setStatus,
   emailError,
   setEmailError,
   editingContactId,
@@ -84,6 +88,39 @@ export const ContactForm: React.FC<ContactFormProps> = ({
           <p className="text-[11px] text-red-600 font-bold flex items-center gap-1">
             <AlertCircle className="w-3 h-3 shrink-0" /> {emailError}
           </p>
+        )}
+
+        {/* Toggle status — cuma muncul waktu lagi edit kontak yang sudah ada */}
+        {editingContactId && (
+          <div>
+            <label className="text-[10px] font-bold uppercase text-[#17274d]/70 block mb-1">
+              STATUS KONTAK
+            </label>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={() => setStatus('AKTIF')}
+                className={`flex-1 py-2 rounded-xl text-xs font-bold border transition ${
+                  status === 'AKTIF'
+                    ? 'bg-emerald-500 text-white border-emerald-500'
+                    : 'bg-white text-[#17274d] border-[#17274d]/20'
+                }`}
+              >
+                Aktif
+              </button>
+              <button
+                type="button"
+                onClick={() => setStatus('PERLU DIPERBARUI')}
+                className={`flex-1 py-2 rounded-xl text-xs font-bold border transition ${
+                  status === 'PERLU DIPERBARUI'
+                    ? 'bg-amber-500 text-white border-amber-500'
+                    : 'bg-white text-[#17274d] border-[#17274d]/20'
+                }`}
+              >
+                Nonaktif
+              </button>
+            </div>
+          </div>
         )}
 
         <button

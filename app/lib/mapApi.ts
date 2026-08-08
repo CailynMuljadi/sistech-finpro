@@ -1,3 +1,10 @@
+const WALKING_SPEED_KMH = 5; // kecepatan rata-rata jalan kaki
+
+function calculateWalkingDurationMin(distanceKm: number): number {
+  return (distanceKm / WALKING_SPEED_KMH) * 60;
+}
+
+
 export interface LatLng {
   lat: number;
   lon: number;
@@ -88,7 +95,7 @@ export async function getRoute(origin: LatLng, dest: LatLng): Promise<RouteResul
   return {
     coords,
     distanceKm: route.distance / 1000,
-    durationMin: route.duration / 60,
+     durationMin: calculateWalkingDurationMin(route.distance / 1000),
     pathLabel,
   };
 }
@@ -131,7 +138,7 @@ export async function getRouteAlternatives(
     return {
       coords,
       distanceKm: route.distance / 1000,
-      durationMin: route.duration / 60,
+      durationMin: calculateWalkingDurationMin(route.distance / 1000),
       pathLabel,
     };
   });

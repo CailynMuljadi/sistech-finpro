@@ -15,6 +15,7 @@ export interface Trip {
 }
 
 const STORAGE_KEY = 'trusted_circle_trip';
+const STORAGE_KEY_COUNT = 'trusted_circle_trip_count';
 const GRACE_PERIOD_SECONDS = 5 * 60;
 
 function loadTrip(): Trip | null {
@@ -28,10 +29,21 @@ function loadTrip(): Trip | null {
   }
 }
 
+function loadCompletedCount(): number {
+  if (typeof window === 'undefined') return 0;
+  const saved = localStorage.getItem(STORAGE_KEY_COUNT);
+  return saved ? parseInt(saved, 10) || 0 : 0;
+}
+
 function saveTrip(trip: Trip | null) {
   if (typeof window === 'undefined') return;
   if (trip) localStorage.setItem(STORAGE_KEY, JSON.stringify(trip));
   else localStorage.removeItem(STORAGE_KEY);
+}
+
+function saveCompletedCount(count: number) {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(STORAGE_KEY_COUNT, count.toString());
 }
 
 export function formatClock(totalSeconds: number) {
@@ -56,6 +68,7 @@ export function formatWIB(ts: number) {
 export function useTripTimer() {
   const [trip, setTrip] = useState<Trip | null>(loadTrip);
   const [now, setNow] = useState(() => Date.now());
+  const [completedTripsCount, setCompletedTripsCount] = useState<number>(loadCompletedCount);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -65,7 +78,7 @@ export function useTripTimer() {
     };
   }, []);
 
-  // auto transisi active -> grace -> alerted berdasarkan waktu
+  // auto transisi active, grace, alerted berdasarkan waktu
   useEffect(() => {
     if (!trip || trip.status === 'confirmed' || trip.status === 'alerted') return;
     const remaining = Math.floor((trip.endTime - now) / 1000);
@@ -120,6 +133,14 @@ export function useTripTimer() {
       if (!prev) return prev;
       const updated: Trip = { ...prev, status: 'confirmed', confirmedAt: Date.now() };
       saveTrip(updated);
+      if (prev.status !== 'confirmed') {
+        setCompletedTripsCount((c) => {
+          const next = c + 1;
+          saveCompletedCount(next);
+          return next;
+        });
+      }
+
       return updated;
     });
   }, []);
@@ -139,5 +160,6 @@ export function useTripTimer() {
     extendTime,
     confirmSafe,
     resetTrip,
+    completedTripsCount, 
   };
 }

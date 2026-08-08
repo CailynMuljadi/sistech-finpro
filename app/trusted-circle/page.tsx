@@ -25,6 +25,7 @@ export default function TrustedCirclePage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [emailError, setEmailError] = useState('');
   const [editingContactId, setEditingContactId] = useState<string | null>(null);
+  const [status, setStatus] = useState<Contact['status']>('AKTIF');
 
   const validateEmail = (inputEmail: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(inputEmail);
 
@@ -32,6 +33,7 @@ export default function TrustedCirclePage() {
     setEditingContactId(contact.id);
     setName(contact.name);
     setEmail(contact.email);
+    setStatus(contact.status);
     setEmailError('');
   };
 
@@ -39,6 +41,7 @@ export default function TrustedCirclePage() {
     setEditingContactId(null);
     setName('');
     setEmail('');
+    setStatus('AKTIF');
     setEmailError('');
   };
 
@@ -48,15 +51,16 @@ export default function TrustedCirclePage() {
     if (!validateEmail(email)) return setEmailError('Format email tidak valid.');
 
     if (editingContactId) {
-      updateContact(editingContactId, name, email);
+      updateContact(editingContactId, name, email, status);
       setEditingContactId(null);
     } else {
       addContact(name, email);
     }
     setName('');
     setEmail('');
+    setStatus('AKTIF');
     setEmailError('');
-  };
+  };  
 
   const filteredContacts = contacts.filter(
     (c) =>
@@ -146,17 +150,19 @@ export default function TrustedCirclePage() {
                 <TravelSetting hasContacts={activeContacts.length > 0} onStart={startTrip} />
               </div>
               <div className="space-y-6">
-                <ContactForm
-                  name={name}
-                  setName={setName}
-                  email={email}
-                  setEmail={setEmail}
-                  emailError={emailError}
-                  setEmailError={setEmailError}
-                  editingContactId={editingContactId}
-                  onSubmit={handleSubmit}
-                  onCancelEdit={handleCancelEdit}
-                />
+                  <ContactForm
+                    name={name}
+                    setName={setName}
+                    email={email}
+                    setEmail={setEmail}
+                    status={status}
+                    setStatus={setStatus}
+                    emailError={emailError}
+                    setEmailError={setEmailError}
+                    editingContactId={editingContactId}
+                    onSubmit={handleSubmit}
+                    onCancelEdit={handleCancelEdit}
+                  />
                 <ContactGuideCard />
                 <TravelTips />
               </div>
